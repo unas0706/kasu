@@ -1,0 +1,86 @@
+# -----------------------
+# Node modules
+# -----------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# -----------------------
+# Environment variables
+# -----------------------
+.env
+.env.*
+!.env.example
+
+# -----------------------
+# Logs
+# -----------------------
+logs
+*.log
+
+# -----------------------
+# Runtime data
+# -----------------------
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# -----------------------
+# Dependency directories
+# -----------------------
+jspm_packages/
+
+# -----------------------
+# Build folders
+# -----------------------
+dist/
+build/
+out/
+.next/
+coverage/
+
+# -----------------------
+# Cache / temp
+# -----------------------
+.cache/
+.tmp/
+.temp/
+
+# -----------------------
+# OS files
+# -----------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------
+# IDE / Editor
+# -----------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# -----------------------
+# TypeScript
+# -----------------------
+*.tsbuildinfo
+
+# -----------------------
+# Docker
+# -----------------------
+docker-compose.override.yml
+
+# -----------------------
+# React / Vite specific
+# -----------------------
+vite.svg
+*.local
+
+# -----------------------
+# Misc
+# -----------------------
+*.tgz
+*.bak

@@ -1,0 +1,5063 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manager Dashboard | Food Ordering System</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+      /* ===== DESIGN TOKENS ===== */
+      :root {
+        /* Color Palette */
+        --primary-50: #eef2ff;
+        --primary-100: #e0e7ff;
+        --primary-500: #3a57e8;
+        --primary-600: #2a46d8;
+        --primary-700: #1d35c2;
+
+        --secondary-50: #f8fafc;
+        --secondary-100: #f1f5f9;
+        --secondary-500: #64748b;
+        --secondary-600: #475569;
+        --secondary-700: #334155;
+
+        --success-50: #f0fdf4;
+        --success-500: #22c55e;
+        --success-600: #16a34a;
+
+        --warning-50: #fef3c7;
+        --warning-500: #f59e0b;
+        --warning-600: #d97706;
+
+        --danger-50: #fef2f2;
+        --danger-500: #ef4444;
+        --danger-600: #dc2626;
+
+        --gray-50: #f9fafb;
+        --gray-100: #f4f5f7;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-800: #1f2937;
+        --gray-900: #111827;
+
+        --white: #ffffff;
+        --black: #000000;
+
+        /* Spacing System (8px base) */
+        --space-1: 0.25rem; /* 4px */
+        --space-2: 0.5rem; /* 8px */
+        --space-3: 0.75rem; /* 12px */
+        --space-4: 1rem; /* 16px */
+        --space-5: 1.5rem; /* 24px */
+        --space-6: 2rem; /* 32px */
+        --space-8: 3rem; /* 48px */
+        --space-10: 4rem; /* 64px */
+        --space-12: 6rem; /* 96px */
+
+        /* Typography */
+        --font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        --font-size-xs: 0.75rem; /* 12px */
+        --font-size-sm: 0.875rem; /* 14px */
+        --font-size-base: 1rem; /* 16px */
+        --font-size-lg: 1.125rem; /* 18px */
+        --font-size-xl: 1.25rem; /* 20px */
+        --font-size-2xl: 1.5rem; /* 24px */
+        --font-size-3xl: 1.875rem; /* 30px */
+        --font-size-4xl: 2.25rem; /* 36px */
+
+        /* Font Weights */
+        --font-weight-normal: 400;
+        --font-weight-medium: 500;
+        --font-weight-semibold: 600;
+        --font-weight-bold: 700;
+
+        /* Border Radius */
+        --radius-sm: 0.25rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 0.75rem;
+        --radius-xl: 1rem;
+        --radius-2xl: 1.5rem;
+        --radius-full: 9999px;
+
+        /* Shadows */
+        --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-sm:
+          0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        --shadow-md:
+          0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg:
+          0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --shadow-xl:
+          0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+        /* Transitions */
+        --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+        /* Layout */
+        --sidebar-width: 260px;
+        --topbar-height: 70px;
+        --container-max: 1440px;
+      }
+
+      .dark-mode {
+        --white: #1a202c;
+        --gray-50: #2d3748;
+        --gray-100: #374151;
+        --gray-200: #4b5563;
+        --gray-300: #6b7280;
+        --gray-400: #9ca3af;
+        --gray-500: #d1d5db;
+        --gray-600: #e5e7eb;
+        --gray-700: #f3f4f6;
+        --gray-800: #f9fafb;
+        --gray-900: #ffffff;
+        --black: #ffffff;
+      }
+
+      /* ===== BASE STYLES ===== */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-family);
+        font-size: var(--font-size-base);
+        line-height: 1.5;
+        color: var(--gray-800);
+        background-color: var(--gray-50);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* ===== LAYOUT ===== */
+      .app-container {
+        display: flex;
+        min-height: 100vh;
+        max-width: var(--container-max);
+        margin: 0 auto;
+        position: relative;
+      }
+
+      /* ===== SIDEBAR ===== */
+      .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--white);
+        border-right: 1px solid var(--gray-200);
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        height: 100vh;
+        z-index: 50;
+        transition: transform var(--transition-base);
+        overflow-y: auto;
+      }
+
+      .sidebar-header {
+        padding: var(--space-5) var(--space-4);
+        border-bottom: 1px solid var(--gray-200);
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+
+      .logo {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-500),
+          var(--primary-700)
+        );
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-weight: var(--font-weight-bold);
+        font-size: var(--font-size-xl);
+      }
+
+      .logo-text {
+        font-weight: var(--font-weight-bold);
+        font-size: var(--font-size-xl);
+        color: var(--gray-900);
+        letter-spacing: -0.025em;
+      }
+
+      .nav-menu {
+        flex: 1;
+        padding: var(--space-4) 0;
+      }
+
+      .nav-btn {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-3) var(--space-4);
+        color: var(--gray-600);
+        text-decoration: none;
+        transition: all var(--transition-fast);
+        position: relative;
+        margin: 0 var(--space-2) var(--space-1);
+        border-radius: var(--radius-md);
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        font-family: var(--font-family);
+        font-size: inherit;
+        cursor: pointer;
+      }
+
+      .nav-btn:hover {
+        background-color: var(--gray-100);
+        color: var(--gray-900);
+      }
+
+      .nav-btn.active {
+        background-color: var(--primary-50);
+        color: var(--primary-600);
+        font-weight: var(--font-weight-medium);
+      }
+
+      .nav-btn.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 40%;
+        width: 3px;
+        background-color: var(--primary-500);
+        border-radius: 0 var(--radius-full) var(--radius-full) 0;
+      }
+
+      .nav-icon {
+        width: 20px;
+        text-align: center;
+        font-size: var(--font-size-lg);
+      }
+
+      .nav-badge {
+        margin-left: auto;
+        background-color: var(--danger-500);
+        color: var(--white);
+        font-size: var(--font-size-xs);
+        padding: 2px 6px;
+        border-radius: var(--radius-full);
+        font-weight: var(--font-weight-medium);
+      }
+
+      .sidebar-footer {
+        padding: var(--space-4);
+        border-top: 1px solid var(--gray-200);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .theme-toggle {
+        background: none;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--gray-500);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+      }
+
+      .theme-toggle:hover {
+        background-color: var(--gray-100);
+        color: var(--gray-700);
+      }
+
+      /* ===== MAIN CONTENT ===== */
+      .main-content {
+        flex: 1;
+        margin-left: var(--sidebar-width);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ===== TOPBAR ===== */
+      .topbar {
+        height: var(--topbar-height);
+        background-color: var(--white);
+        border-bottom: 1px solid var(--gray-200);
+        padding: 0 var(--space-5);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        backdrop-filter: blur(8px);
+        background-color: rgba(255, 255, 255, 0.95);
+      }
+
+      .dark-mode .topbar {
+        background-color: rgba(26, 32, 44, 0.95);
+      }
+
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-size: var(--font-size-sm);
+      }
+
+      .breadcrumb-item {
+        color: var(--gray-600);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+
+      .breadcrumb-item.active {
+        color: var(--gray-900);
+        font-weight: var(--font-weight-medium);
+      }
+
+      .breadcrumb-separator {
+        color: var(--gray-400);
+      }
+
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+      }
+
+      .search-container {
+        position: relative;
+      }
+
+      .search-input {
+        padding: var(--space-2) var(--space-3);
+        padding-left: var(--space-8);
+        border: 1px solid var(--gray-300);
+        border-radius: var(--radius-full);
+        background-color: var(--gray-50);
+        font-size: var(--font-size-sm);
+        width: 240px;
+        transition: all var(--transition-fast);
+        font-family: var(--font-family);
+      }
+
+      .search-input:focus {
+        outline: none;
+        border-color: var(--primary-500);
+        background-color: var(--white);
+        width: 280px;
+        box-shadow: 0 0 0 3px rgba(58, 87, 232, 0.1);
+      }
+
+      .search-icon {
+        position: absolute;
+        left: var(--space-3);
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray-500);
+        pointer-events: none;
+      }
+
+      .notification-btn {
+        position: relative;
+        background: none;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--gray-500);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+      }
+
+      .notification-btn:hover {
+        background-color: var(--gray-100);
+        color: var(--gray-700);
+      }
+
+      .notification-badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 8px;
+        height: 8px;
+        border-radius: var(--radius-full);
+        background-color: var(--danger-500);
+        border: 2px solid var(--white);
+      }
+
+      .dark-mode .notification-badge {
+        border-color: var(--white);
+      }
+
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-2);
+        border-radius: var(--radius-full);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+      }
+
+      .user-profile:hover {
+        background-color: var(--gray-100);
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-full);
+        background: linear-gradient(
+          135deg,
+          var(--primary-500),
+          var(--primary-700)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-base);
+      }
+
+      .user-info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .user-name {
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-sm);
+      }
+
+      .user-role {
+        font-size: var(--font-size-xs);
+        color: var(--gray-500);
+      }
+
+      /* ===== PAGE CONTENT ===== */
+      .page-content {
+        flex: 1;
+        padding: var(--space-5);
+        overflow-y: auto;
+      }
+
+      .page {
+        display: none;
+      }
+
+      .page.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-6);
+        flex-wrap: wrap;
+        gap: var(--space-4);
+      }
+
+      .page-title {
+        font-size: var(--font-size-3xl);
+        font-weight: var(--font-weight-bold);
+        color: var(--gray-900);
+        letter-spacing: -0.025em;
+      }
+
+      .page-actions {
+        display: flex;
+        gap: var(--space-3);
+        flex-wrap: wrap;
+      }
+
+      /* ===== BUTTONS ===== */
+      .btn {
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-md);
+        font-weight: var(--font-weight-medium);
+        font-size: var(--font-size-sm);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        font-family: var(--font-family);
+        line-height: 1.5;
+      }
+
+      .btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(58, 87, 232, 0.1);
+      }
+
+      .btn-primary {
+        background-color: var(--primary-500);
+        color: var(--white);
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-600);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .btn-secondary {
+        background-color: var(--gray-200);
+        color: var(--gray-800);
+      }
+
+      .btn-secondary:hover {
+        background-color: var(--gray-300);
+      }
+
+      .btn-success {
+        background-color: var(--success-500);
+        color: var(--white);
+      }
+
+      .btn-success:hover {
+        background-color: var(--success-600);
+      }
+
+      .btn-danger {
+        background-color: var(--danger-500);
+        color: var(--white);
+      }
+
+      .btn-danger:hover {
+        background-color: var(--danger-600);
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        border: 1px solid var(--gray-300);
+        color: var(--gray-700);
+      }
+
+      .btn-outline:hover {
+        background-color: var(--gray-50);
+        border-color: var(--gray-400);
+      }
+
+      .btn-sm {
+        padding: var(--space-1) var(--space-3);
+        font-size: var(--font-size-xs);
+      }
+
+      .btn-lg {
+        padding: var(--space-3) var(--space-6);
+        font-size: var(--font-size-base);
+      }
+
+      .btn-icon {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        justify-content: center;
+      }
+
+      /* ===== CARDS ===== */
+      .card {
+        background-color: var(--white);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--gray-200);
+        box-shadow: var(--shadow-sm);
+        transition: all var(--transition-base);
+        overflow: hidden;
+      }
+
+      .card:hover {
+        box-shadow: var(--shadow-md);
+      }
+
+      .card-header {
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--gray-200);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+      }
+
+      .card-title {
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-lg);
+        color: var(--gray-900);
+      }
+
+      .card-body {
+        padding: var(--space-4);
+      }
+
+      .card-footer {
+        padding: var(--space-4);
+        border-top: 1px solid var(--gray-200);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* ===== SUMMARY CARDS ===== */
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: var(--space-4);
+        margin-bottom: var(--space-6);
+      }
+
+      .summary-card {
+        padding: var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+      }
+
+      .summary-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: var(--radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: var(--font-size-2xl);
+      }
+
+      .summary-icon.revenue {
+        background-color: rgba(58, 87, 232, 0.1);
+        color: var(--primary-500);
+      }
+
+      .summary-icon.orders {
+        background-color: rgba(34, 197, 94, 0.1);
+        color: var(--success-500);
+      }
+
+      .summary-icon.customers {
+        background-color: rgba(245, 158, 11, 0.1);
+        color: var(--warning-500);
+      }
+
+      .summary-icon.average {
+        background-color: rgba(139, 92, 246, 0.1);
+        color: #8b5cf6;
+      }
+
+      .summary-info {
+        flex: 1;
+      }
+
+      .summary-label {
+        font-size: var(--font-size-sm);
+        color: var(--gray-600);
+        margin-bottom: var(--space-1);
+      }
+
+      .summary-value {
+        font-size: var(--font-size-2xl);
+        font-weight: var(--font-weight-bold);
+        color: var(--gray-900);
+        line-height: 1.2;
+      }
+
+      .summary-change {
+        font-size: var(--font-size-xs);
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        margin-top: var(--space-1);
+      }
+
+      .summary-change.positive {
+        color: var(--success-600);
+      }
+
+      .summary-change.negative {
+        color: var(--danger-600);
+      }
+
+      /* ===== CHARTS ===== */
+      .charts-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-4);
+        margin-bottom: var(--space-6);
+      }
+
+      @media (max-width: 1024px) {
+        .charts-container {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .chart-card {
+        height: 320px;
+      }
+
+      .chart-container {
+        height: 240px;
+        width: 100%;
+        position: relative;
+      }
+
+      /* ===== TABLES ===== */
+      .table-container {
+        overflow-x: auto;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--gray-200);
+        background-color: var(--white);
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 800px;
+      }
+
+      .table thead {
+        background-color: var(--gray-50);
+        border-bottom: 2px solid var(--gray-200);
+      }
+
+      .table th {
+        padding: var(--space-3) var(--space-4);
+        text-align: left;
+        font-weight: var(--font-weight-semibold);
+        color: var(--gray-700);
+        font-size: var(--font-size-sm);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .table tbody tr {
+        border-bottom: 1px solid var(--gray-200);
+        transition: all var(--transition-fast);
+      }
+
+      .table tbody tr:hover {
+        background-color: var(--gray-50);
+      }
+
+      .table td {
+        padding: var(--space-3) var(--space-4);
+        color: var(--gray-700);
+        font-size: var(--font-size-sm);
+        vertical-align: middle;
+      }
+
+      /* ===== STATUS BADGES ===== */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 8px;
+        border-radius: var(--radius-full);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-medium);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        line-height: 1;
+      }
+
+      .badge-pending {
+        background-color: var(--warning-50);
+        color: var(--warning-600);
+      }
+
+      .badge-accepted {
+        background-color: rgba(58, 87, 232, 0.1);
+        color: var(--primary-600);
+      }
+
+      .badge-preparing {
+        background-color: rgba(139, 92, 246, 0.1);
+        color: #8b5cf6;
+      }
+
+      .badge-ready {
+        background-color: rgba(34, 197, 94, 0.1);
+        color: var(--success-600);
+      }
+
+      .badge-completed {
+        background-color: rgba(34, 197, 94, 0.1);
+        color: var(--success-600);
+      }
+
+      .badge-declined {
+        background-color: var(--danger-50);
+        color: var(--danger-600);
+      }
+
+      .badge-active {
+        background-color: var(--success-50);
+        color: var(--success-600);
+      }
+
+      .badge-inactive {
+        background-color: var(--gray-100);
+        color: var(--gray-600);
+      }
+
+      /* ===== TOGGLE SWITCH ===== */
+      .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 24px;
+      }
+
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--gray-300);
+        transition: 0.4s;
+        border-radius: var(--radius-full);
+      }
+
+      .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: var(--white);
+        transition: 0.4s;
+        border-radius: 50%;
+        box-shadow: var(--shadow-xs);
+      }
+
+      input:checked + .toggle-slider {
+        background-color: var(--success-500);
+      }
+
+      input:checked + .toggle-slider:before {
+        transform: translateX(20px);
+      }
+
+      /* ===== CATEGORIES & ITEMS MANAGEMENT ===== */
+      .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: var(--space-4);
+      }
+
+      .category-card {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .category-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-3);
+      }
+
+      .category-name {
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-lg);
+        color: var(--gray-900);
+      }
+
+      .category-items-count {
+        font-size: var(--font-size-sm);
+        color: var(--gray-500);
+        background-color: var(--gray-100);
+        padding: 2px 8px;
+        border-radius: var(--radius-full);
+      }
+
+      .items-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+      }
+
+      .item-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--gray-200);
+        background-color: var(--gray-50);
+        transition: all var(--transition-fast);
+      }
+
+      .item-card:hover {
+        background-color: var(--white);
+        border-color: var(--gray-300);
+        transform: translateY(-1px);
+      }
+
+      .item-info {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        flex: 1;
+      }
+
+      .item-name {
+        font-weight: var(--font-weight-medium);
+        color: var(--gray-800);
+      }
+
+      .item-price {
+        font-size: var(--font-size-sm);
+        color: var(--gray-600);
+      }
+
+      .item-stock {
+        font-size: var(--font-size-xs);
+        color: var(--gray-500);
+      }
+
+      .item-stock.low {
+        color: var(--danger-500);
+        font-weight: var(--font-weight-medium);
+      }
+
+      .item-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+
+      /* ===== LIVE ORDERS ===== */
+      .orders-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: var(--space-4);
+      }
+
+      .order-card {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .order-card.new {
+        animation: pulse 2s infinite;
+        border-color: var(--primary-500);
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(58, 87, 232, 0.4);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(58, 87, 232, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(58, 87, 232, 0);
+        }
+      }
+
+      .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-3);
+      }
+
+      .order-id {
+        font-weight: var(--font-weight-semibold);
+        color: var(--gray-900);
+        font-family: "Courier New", monospace;
+      }
+
+      .order-time {
+        font-size: var(--font-size-xs);
+        color: var(--gray-500);
+      }
+
+      .order-items {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        margin-bottom: var(--space-3);
+      }
+
+      .order-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: var(--space-2);
+        border-bottom: 1px dashed var(--gray-200);
+      }
+
+      .order-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      .item-quantity {
+        font-weight: var(--font-weight-medium);
+        color: var(--gray-700);
+        background-color: var(--gray-100);
+        padding: 2px 6px;
+        border-radius: var(--radius-sm);
+        min-width: 24px;
+        text-align: center;
+      }
+
+      .order-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+      }
+
+      .order-total {
+        font-weight: var(--font-weight-bold);
+        font-size: var(--font-size-lg);
+        color: var(--gray-900);
+      }
+
+      .order-actions {
+        display: flex;
+        gap: var(--space-2);
+      }
+
+      /* ===== FILTERS & SEARCH ===== */
+      .filters-container {
+        display: flex;
+        gap: var(--space-4);
+        margin-bottom: var(--space-4);
+        flex-wrap: wrap;
+        align-items: flex-end;
+      }
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+      }
+
+      .filter-label {
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        color: var(--gray-600);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .filter-select {
+        padding: var(--space-2) var(--space-3);
+        border: 1px solid var(--gray-300);
+        border-radius: var(--radius-md);
+        background-color: var(--white);
+        font-size: var(--font-size-sm);
+        min-width: 160px;
+        font-family: var(--font-family);
+      }
+
+      .filter-select:focus {
+        outline: none;
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 3px rgba(58, 87, 232, 0.1);
+      }
+
+      .date-picker {
+        padding: var(--space-2) var(--space-3);
+        border: 1px solid var(--gray-300);
+        border-radius: var(--radius-md);
+        background-color: var(--white);
+        font-size: var(--font-size-sm);
+        min-width: 200px;
+        font-family: var(--font-family);
+      }
+
+      /* ===== TAX CONFIGURATION ===== */
+      .tax-configuration {
+        max-width: 500px;
+      }
+
+      .tax-input-container {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        margin-bottom: var(--space-4);
+      }
+
+      .tax-input {
+        width: 120px;
+        padding: var(--space-2) var(--space-3);
+        border: 1px solid var(--gray-300);
+        border-radius: var(--radius-md);
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-semibold);
+        text-align: center;
+        font-family: var(--font-family);
+      }
+
+      .tax-input:focus {
+        outline: none;
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 3px rgba(58, 87, 232, 0.1);
+      }
+
+      .tax-preview {
+        background-color: var(--gray-50);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4);
+        margin-bottom: var(--space-4);
+      }
+
+      .tax-preview-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: var(--space-2);
+      }
+
+      .tax-preview-item.total {
+        border-top: 2px solid var(--gray-300);
+        padding-top: var(--space-3);
+        margin-top: var(--space-2);
+        font-weight: var(--font-weight-bold);
+      }
+
+      /* ===== TOAST NOTIFICATIONS ===== */
+      .toast-container {
+        position: fixed;
+        bottom: var(--space-4);
+        right: var(--space-4);
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+      }
+
+      .toast {
+        padding: var(--space-3) var(--space-4);
+        border-radius: var(--radius-md);
+        background-color: var(--white);
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        min-width: 300px;
+        transform: translateX(100%);
+        opacity: 0;
+        animation: slideIn 0.3s ease forwards;
+        border-left: 4px solid transparent;
+      }
+
+      .toast.success {
+        border-left-color: var(--success-500);
+      }
+
+      .toast.error {
+        border-left-color: var(--danger-500);
+      }
+
+      .toast.info {
+        border-left-color: var(--primary-500);
+      }
+
+      .toast.warning {
+        border-left-color: var(--warning-500);
+      }
+
+      .toast-icon {
+        font-size: var(--font-size-xl);
+      }
+
+      .toast.success .toast-icon {
+        color: var(--success-500);
+      }
+
+      .toast.error .toast-icon {
+        color: var(--danger-500);
+      }
+
+      .toast.info .toast-icon {
+        color: var(--primary-500);
+      }
+
+      .toast.warning .toast-icon {
+        color: var(--warning-500);
+      }
+
+      .toast-message {
+        flex: 1;
+        font-size: var(--font-size-sm);
+        color: var(--gray-700);
+      }
+
+      .toast-close {
+        background: none;
+        border: none;
+        color: var(--gray-400);
+        cursor: pointer;
+        font-size: var(--font-size-base);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: var(--radius-full);
+        transition: all var(--transition-fast);
+      }
+
+      .toast-close:hover {
+        background-color: var(--gray-100);
+        color: var(--gray-600);
+      }
+
+      @keyframes slideIn {
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      /* ===== MODALS ===== */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: var(--space-4);
+        backdrop-filter: blur(4px);
+      }
+
+      .modal-overlay.active {
+        display: flex;
+        animation: fadeIn 0.2s ease;
+      }
+
+      .modal {
+        background-color: var(--white);
+        border-radius: var(--radius-lg);
+        width: 100%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: var(--shadow-xl);
+        animation: modalSlideIn 0.3s ease;
+      }
+
+      @keyframes modalSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-header {
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--gray-200);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .modal-title {
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-xl);
+        color: var(--gray-900);
+      }
+
+      .modal-close {
+        background: none;
+        border: none;
+        color: var(--gray-500);
+        cursor: pointer;
+        font-size: var(--font-size-xl);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        transition: all var(--transition-fast);
+      }
+
+      .modal-close:hover {
+        background-color: var(--gray-100);
+        color: var(--gray-700);
+      }
+
+      .modal-body {
+        padding: var(--space-4);
+      }
+
+      .modal-footer {
+        padding: var(--space-4);
+        border-top: 1px solid var(--gray-200);
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--space-3);
+      }
+
+      /* ===== FORM ELEMENTS ===== */
+      .form-group {
+        margin-bottom: var(--space-4);
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: var(--space-2);
+        font-weight: var(--font-weight-medium);
+        color: var(--gray-700);
+      }
+
+      .form-label.required::after {
+        content: "*";
+        color: var(--danger-500);
+        margin-left: 4px;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: var(--space-2) var(--space-3);
+        border: 1px solid var(--gray-300);
+        border-radius: var(--radius-md);
+        font-size: var(--font-size-sm);
+        font-family: var(--font-family);
+        transition: all var(--transition-fast);
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 3px rgba(58, 87, 232, 0.1);
+      }
+
+      .form-textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .form-hint {
+        font-size: var(--font-size-xs);
+        color: var(--gray-500);
+        margin-top: var(--space-1);
+      }
+
+      /* ===== LOADING SKELETONS ===== */
+      .skeleton {
+        background-color: var(--gray-200);
+        border-radius: var(--radius-md);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .skeleton::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-100%);
+        background-image: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0,
+          rgba(255, 255, 255, 0.2) 20%,
+          rgba(255, 255, 255, 0.5) 60%,
+          rgba(255, 255, 255, 0)
+        );
+        animation: shimmer 2s infinite;
+      }
+
+      @keyframes shimmer {
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      .skeleton-text {
+        height: 1em;
+        margin-bottom: var(--space-2);
+        border-radius: var(--radius-sm);
+      }
+
+      .skeleton-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-full);
+      }
+
+      /* ===== EMPTY STATES ===== */
+      .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-10) var(--space-4);
+        text-align: center;
+      }
+
+      .empty-state-icon {
+        font-size: var(--font-size-4xl);
+        color: var(--gray-300);
+        margin-bottom: var(--space-4);
+        opacity: 0.5;
+      }
+
+      .empty-state-title {
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-semibold);
+        color: var(--gray-700);
+        margin-bottom: var(--space-2);
+      }
+
+      .empty-state-description {
+        color: var(--gray-500);
+        max-width: 400px;
+        margin-bottom: var(--space-4);
+        line-height: 1.6;
+      }
+
+      /* ===== PAGINATION ===== */
+      .pagination {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+
+      .pagination-btn {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--gray-300);
+        border-radius: var(--radius-md);
+        background-color: var(--white);
+        color: var(--gray-700);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+      }
+
+      .pagination-btn:hover:not(:disabled) {
+        background-color: var(--gray-50);
+        border-color: var(--gray-400);
+      }
+
+      .pagination-btn.active {
+        background-color: var(--primary-500);
+        border-color: var(--primary-500);
+        color: var(--white);
+      }
+
+      .pagination-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .pagination-info {
+        font-size: var(--font-size-sm);
+        color: var(--gray-600);
+        margin: 0 var(--space-2);
+      }
+
+      /* ===== RESPONSIVE DESIGN ===== */
+      @media (max-width: 1200px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+
+        .sidebar.active {
+          transform: translateX(0);
+        }
+
+        .main-content {
+          margin-left: 0;
+        }
+
+        .mobile-menu-toggle {
+          display: flex;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .page-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: var(--space-3);
+        }
+
+        .page-actions {
+          width: 100%;
+          justify-content: flex-start;
+        }
+
+        .topbar {
+          padding: 0 var(--space-4);
+        }
+
+        .search-input {
+          width: 160px;
+        }
+
+        .search-input:focus {
+          width: 200px;
+        }
+
+        .orders-grid,
+        .categories-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .summary-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .page-content {
+          padding: var(--space-4);
+        }
+
+        .filters-container {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .filter-select,
+        .date-picker {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .summary-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .charts-container {
+          gap: var(--space-3);
+        }
+
+        .chart-card {
+          height: 280px;
+        }
+
+        .chart-container {
+          height: 200px;
+        }
+
+        .toast {
+          min-width: auto;
+          width: calc(100vw - var(--space-8));
+        }
+      }
+
+      /* ===== MOBILE MENU TOGGLE ===== */
+      .mobile-menu-toggle {
+        display: none;
+        position: fixed;
+        bottom: var(--space-4);
+        right: var(--space-4);
+        width: 56px;
+        height: 56px;
+        border-radius: var(--radius-full);
+        background: linear-gradient(
+          135deg,
+          var(--primary-500),
+          var(--primary-700)
+        );
+        color: var(--white);
+        border: none;
+        align-items: center;
+        justify-content: center;
+        font-size: var(--font-size-xl);
+        z-index: 50;
+        box-shadow: var(--shadow-lg);
+        cursor: pointer;
+        transition: all var(--transition-base);
+      }
+
+      .mobile-menu-toggle:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-xl);
+      }
+
+      .mobile-menu-toggle.active {
+        transform: rotate(90deg);
+      }
+
+      /* ===== UTILITY CLASSES ===== */
+      .hidden {
+        display: none !important;
+      }
+
+      .flex {
+        display: flex;
+      }
+
+      .items-center {
+        align-items: center;
+      }
+
+      .justify-between {
+        justify-content: space-between;
+      }
+
+      .gap-2 {
+        gap: var(--space-2);
+      }
+
+      .gap-3 {
+        gap: var(--space-3);
+      }
+
+      .gap-4 {
+        gap: var(--space-4);
+      }
+
+      .mb-2 {
+        margin-bottom: var(--space-2);
+      }
+
+      .mb-3 {
+        margin-bottom: var(--space-3);
+      }
+
+      .mb-4 {
+        margin-bottom: var(--space-4);
+      }
+
+      .mb-6 {
+        margin-bottom: var(--space-6);
+      }
+
+      .mt-2 {
+        margin-top: var(--space-2);
+      }
+
+      .mt-3 {
+        margin-top: var(--space-3);
+      }
+
+      .mt-4 {
+        margin-top: var(--space-4);
+      }
+
+      .mt-6 {
+        margin-top: var(--space-6);
+      }
+
+      .w-full {
+        width: 100%;
+      }
+
+      .text-sm {
+        font-size: var(--font-size-sm);
+      }
+
+      .text-xs {
+        font-size: var(--font-size-xs);
+      }
+
+      .text-gray-500 {
+        color: var(--gray-500);
+      }
+
+      .text-gray-600 {
+        color: var(--gray-600);
+      }
+
+      .text-gray-700 {
+        color: var(--gray-700);
+      }
+
+      .text-primary {
+        color: var(--primary-500);
+      }
+
+      .text-success {
+        color: var(--success-500);
+      }
+
+      .text-danger {
+        color: var(--danger-500);
+      }
+
+      .font-medium {
+        font-weight: var(--font-weight-medium);
+      }
+
+      .font-semibold {
+        font-weight: var(--font-weight-semibold);
+      }
+
+      .font-bold {
+        font-weight: var(--font-weight-bold);
+      }
+
+      .truncate {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- ===== SIDEBAR NAVIGATION ===== -->
+      <nav class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">F</div>
+          <div class="logo-text">FoodFlow</div>
+        </div>
+
+        <div class="nav-menu">
+          <button class="nav-btn active" data-page="dashboard">
+            <i class="nav-icon fas fa-chart-pie"></i>
+            Dashboard
+          </button>
+          <button class="nav-btn" data-page="items">
+            <i class="nav-icon fas fa-box"></i>
+            Items & Categories
+          </button>
+          <button class="nav-btn" data-page="live-orders">
+            <i class="nav-icon fas fa-bolt"></i>
+            Live Orders
+            <span class="nav-badge" id="live-orders-badge">3</span>
+          </button>
+          <button class="nav-btn" data-page="orders-history">
+            <i class="nav-icon fas fa-history"></i>
+            Orders History
+          </button>
+          <button class="nav-btn" data-page="analytics">
+            <i class="nav-icon fas fa-chart-line"></i>
+            Analytics
+          </button>
+          <button class="nav-btn" data-page="tax">
+            <i class="nav-icon fas fa-cog"></i>
+            Tax & Settings
+          </button>
+        </div>
+
+        <div class="sidebar-footer">
+          <button class="theme-toggle" id="theme-toggle">
+            <i class="fas fa-moon"></i>
+          </button>
+          <div class="user-profile">
+            <div class="user-avatar">MJ</div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ===== MAIN CONTENT ===== -->
+      <main class="main-content">
+        <!-- ===== TOP BAR ===== -->
+        <header class="topbar">
+          <div class="breadcrumb">
+            <span class="breadcrumb-item">
+              <i class="fas fa-home text-gray-500"></i>
+              Manager Dashboard
+            </span>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-item active" id="current-page"
+              >Dashboard</span
+            >
+          </div>
+
+          <div class="topbar-actions">
+            <div class="search-container">
+              <i class="fas fa-search search-icon"></i>
+              <input
+                type="text"
+                class="search-input"
+                placeholder="Search orders, items, customers..."
+              />
+            </div>
+
+            <button class="notification-btn">
+              <i class="fas fa-bell"></i>
+              <span class="notification-badge"></span>
+            </button>
+
+            <div class="user-profile">
+              <div class="user-avatar">MJ</div>
+              <div class="user-info">
+                <div class="user-name">Michael Johnson</div>
+                <div class="user-role">Restaurant Manager</div>
+              </div>
+              <i class="fas fa-chevron-down text-gray-500"></i>
+            </div>
+          </div>
+        </header>
+
+        <!-- ===== PAGE CONTENT ===== -->
+        <div class="page-content">
+          <!-- ===== DASHBOARD PAGE ===== -->
+          <section class="page active" id="dashboard-page">
+            <div class="page-header">
+              <h1 class="page-title">Dashboard Overview</h1>
+              <div class="page-actions">
+                <button class="btn btn-outline" id="export-report-btn">
+                  <i class="fas fa-download"></i> Export Report
+                </button>
+                <button class="btn btn-primary" id="refresh-data-btn">
+                  <i class="fas fa-sync-alt"></i> Refresh Data
+                </button>
+              </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-grid">
+              <div class="card summary-card">
+                <div class="summary-icon revenue">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="summary-info">
+                  <div class="summary-label">Today's Revenue</div>
+                  <div class="summary-value">$2,847.50</div>
+                  <div class="summary-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>12.5% from yesterday</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card summary-card">
+                <div class="summary-icon orders">
+                  <i class="fas fa-shopping-bag"></i>
+                </div>
+                <div class="summary-info">
+                  <div class="summary-label">Today's Orders</div>
+                  <div class="summary-value">142</div>
+                  <div class="summary-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>8.2% from yesterday</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card summary-card">
+                <div class="summary-icon customers">
+                  <i class="fas fa-users"></i>
+                </div>
+                <div class="summary-info">
+                  <div class="summary-label">Active Customers</div>
+                  <div class="summary-value">89</div>
+                  <div class="summary-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>5.3% this week</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card summary-card">
+                <div class="summary-icon average">
+                  <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="summary-info">
+                  <div class="summary-label">Avg. Order Value</div>
+                  <div class="summary-value">$24.80</div>
+                  <div class="summary-change negative">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>2.1% from last week</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-container">
+              <div class="card chart-card">
+                <div class="card-header">
+                  <div class="card-title">Revenue Trend (Last 7 Days)</div>
+                  <div class="card-actions">
+                    <select class="filter-select">
+                      <option>Last 7 Days</option>
+                      <option>Last 30 Days</option>
+                      <option>This Month</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="chart-container">
+                    <canvas id="revenue-chart"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card chart-card">
+                <div class="card-header">
+                  <div class="card-title">Order Status Distribution</div>
+                  <div class="card-actions">
+                    <button class="btn btn-sm btn-outline">View Details</button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="chart-container">
+                    <canvas id="orders-chart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Orders & Top Items -->
+            <div class="charts-container">
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">Recent Orders</div>
+                  <div class="card-actions">
+                    <button class="btn btn-sm btn-outline">View All</button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-container">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Order ID</th>
+                          <th>Customer</th>
+                          <th>Items</th>
+                          <th>Total</th>
+                          <th>Status</th>
+                          <th>Time</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="font-semibold">#ORD-7842</td>
+                          <td>John Smith</td>
+                          <td>3 items</td>
+                          <td class="font-semibold">$42.50</td>
+                          <td>
+                            <span class="badge badge-completed">Completed</span>
+                          </td>
+                          <td class="text-gray-600">12:30 PM</td>
+                        </tr>
+                        <tr>
+                          <td class="font-semibold">#ORD-7841</td>
+                          <td>Emma Wilson</td>
+                          <td>2 items</td>
+                          <td class="font-semibold">$28.75</td>
+                          <td>
+                            <span class="badge badge-accepted">Accepted</span>
+                          </td>
+                          <td class="text-gray-600">12:15 PM</td>
+                        </tr>
+                        <tr>
+                          <td class="font-semibold">#ORD-7840</td>
+                          <td>Robert Brown</td>
+                          <td>5 items</td>
+                          <td class="font-semibold">$67.20</td>
+                          <td>
+                            <span class="badge badge-pending">Pending</span>
+                          </td>
+                          <td class="text-gray-600">11:45 AM</td>
+                        </tr>
+                        <tr>
+                          <td class="font-semibold">#ORD-7839</td>
+                          <td>Sarah Johnson</td>
+                          <td>1 item</td>
+                          <td class="font-semibold">$12.99</td>
+                          <td>
+                            <span class="badge badge-declined">Declined</span>
+                          </td>
+                          <td class="text-gray-600">11:20 AM</td>
+                        </tr>
+                        <tr>
+                          <td class="font-semibold">#ORD-7838</td>
+                          <td>Michael Lee</td>
+                          <td>4 items</td>
+                          <td class="font-semibold">$52.30</td>
+                          <td>
+                            <span class="badge badge-completed">Completed</span>
+                          </td>
+                          <td class="text-gray-600">10:55 AM</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">Top Selling Items</div>
+                  <div class="card-actions">
+                    <select class="filter-select">
+                      <option>Today</option>
+                      <option>This Week</option>
+                      <option>This Month</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-container">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Item</th>
+                          <th>Category</th>
+                          <th>Sold</th>
+                          <th>Revenue</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="font-medium">Classic Popcorn (Large)</td>
+                          <td>Popcorn</td>
+                          <td>28</td>
+                          <td class="font-semibold">$251.72</td>
+                        </tr>
+                        <tr>
+                          <td class="font-medium">Coca-Cola (500ml)</td>
+                          <td>Soft Drinks</td>
+                          <td>42</td>
+                          <td class="font-semibold">$147.00</td>
+                        </tr>
+                        <tr>
+                          <td class="font-medium">Caramel Popcorn (Medium)</td>
+                          <td>Popcorn</td>
+                          <td>19</td>
+                          <td class="font-semibold">$132.81</td>
+                        </tr>
+                        <tr>
+                          <td class="font-medium">Chocolate Brownie</td>
+                          <td>Desserts</td>
+                          <td>15</td>
+                          <td class="font-semibold">$89.85</td>
+                        </tr>
+                        <tr>
+                          <td class="font-medium">Pepsi (500ml)</td>
+                          <td>Soft Drinks</td>
+                          <td>12</td>
+                          <td class="font-semibold">$42.00</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ===== ITEMS & CATEGORIES PAGE ===== -->
+          <section class="page" id="items-page">
+            <div class="page-header">
+              <h1 class="page-title">Items & Categories Management</h1>
+              <div class="page-actions">
+                <button class="btn btn-outline" id="add-category-btn">
+                  <i class="fas fa-folder-plus"></i> Add Category
+                </button>
+                <button class="btn btn-primary" id="add-item-btn">
+                  <i class="fas fa-plus"></i> Add New Item
+                </button>
+              </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-container mb-6">
+              <div class="filter-group">
+                <div class="filter-label">Category</div>
+                <select class="filter-select" id="category-filter">
+                  <option value="all">All Categories</option>
+                  <option value="popcorn">Popcorn</option>
+                  <option value="drinks">Soft Drinks</option>
+                  <option value="desserts">Desserts</option>
+                  <option value="snacks">Snacks</option>
+                  <option value="combo">Combo Meals</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <div class="filter-label">Availability</div>
+                <select class="filter-select" id="availability-filter">
+                  <option value="all">All Items</option>
+                  <option value="active">Active Only</option>
+                  <option value="inactive">Inactive Only</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <div class="filter-label">Stock Status</div>
+                <select class="filter-select" id="stock-filter">
+                  <option value="all">All Stock</option>
+                  <option value="in-stock">In Stock</option>
+                  <option value="low">Low Stock</option>
+                  <option value="out">Out of Stock</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <div class="filter-label">Search Items</div>
+                <div class="search-container">
+                  <i class="fas fa-search search-icon"></i>
+                  <input
+                    type="text"
+                    class="search-input"
+                    placeholder="Search items..."
+                    id="item-search"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Categories Grid -->
+            <div class="categories-grid">
+              <!-- Popcorn Category -->
+              <div class="card category-card">
+                <div class="card-header">
+                  <div class="category-header">
+                    <div>
+                      <div class="category-name">Popcorn</div>
+                      <div class="category-items-count">
+                        8 items • 142 sold today
+                      </div>
+                    </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" checked />
+                      <span class="toggle-slider"></span>
+                    </label>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="items-list">
+                    <div class="item-card">
+                      <div class="item-info">
+                        <div class="item-name">Classic Popcorn (Large)</div>
+                        <div class="item-price">$8.99</div>
+                        <div class="item-stock">Stock: 42</div>
+                      </div>
+                      <div class="item-actions">
+                        <label class="toggle-switch">
+                          <input type="checkbox" checked />
+                          <span class="toggle-slider"></span>
+                        </label>
+                        <button class="btn btn-sm btn-outline edit-item-btn">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline delete-item-btn">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="item-card">
+                      <div class="item-info">
+                        <div class="item-name">Caramel Popcorn (Medium)</div>
+                        <div class="item-price">$6.99</div>
+                        <div class="item-stock">Stock: 28</div>
+                      </div>
+                      <div class="item-actions">
+                        <label class="toggle-switch">
+                          <input type="checkbox" checked />
+                          <span class="toggle-slider"></span>
+                        </label>
+                        <button class="btn btn-sm btn-outline edit-item-btn">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline delete-item-btn">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="item-card">
+                      <div class="item-info">
+                        <div class="item-name">Cheese Popcorn (Small)</div>
+                        <div class="item-price">$4.99</div>
+                        <div class="item-stock low">Stock: 5</div>
+                      </div>
+                      <div class="item-actions">
+                        <label class="toggle-switch">
+                          <input type="checkbox" />
+                          <span class="toggle-slider"></span>
+                        </label>
+                        <button class="btn btn-sm btn-outline edit-item-btn">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline delete-item-btn">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="item-card">
+                      <div class="item-info">
+                        <div class="item-name">Butter Popcorn (Large)</div>
+                        <div class="item-price">$9.50</div>
+                        <div class="item-stock">Stock: 36</div>
+                      </div>
+                      <div class="item-actions">
+                        <label class="toggle-switch">
+                          <input type="checkbox" checked />
+                          <span class="toggle-slider"></span>
+                        </label>
+                        <button class="btn btn-sm btn-outline edit-item-btn">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline delete-item-btn">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <span class="text-gray-600 text-sm"
+                    >Total Category Revenue: $1,842.35</span
+                  >
+                  <button class="btn btn-sm btn-outline">View All Items</button>
+                </div>
+              </div>
+
+              <!-- Soft Drinks Category -->
+              <div class="card category-card">
+                <div class="card-header">
+                  <div class="category-header">
+                    <div>
+                      <div class="category-name">Soft Drinks</div>
+                      <div class="category-items-count">
+                        6 items • 238 sold today
+                      </div>
+                    </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" checked />
+                      <span class="toggle-slider"></span>
+                    </label>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="items-list">
+                    <div class="item-card">
+                      <div class="item-info">
+                        <div class="item-name">Coca-Cola (500ml)</div>
+                        <div class="item-price">$3.50</div>
+                        <div class="item-stock">Stock: 120</div>
+                      </div>
+                      <div class="item-actions">
+                        <label class="toggle-switch">
+                          <input type="checkbox" checked />
+                          <span class="toggle-slider"></span>
+                        </label>
+                        <button class="btn btn-sm btn-outline edit-item-btn">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline delete-item-btn">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="item-card">
+                      <div class="item-info">
+                        <div class="item-name">Pepsi (500ml)</div>
+                        <div class="item-price">$3.50</div>
+                        <div class="item-stock">Stock: 95</div>
+                      </div>
+                      <div class="item-actions">
+                        <label class="toggle-switch">
+                          <input type="checkbox" checked />
+                          <span class="toggle-slider"></span>
+                        </label>
+                        <button class="btn btn-sm btn-outline edit-item-btn">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline delete-item-btn">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="item-card">
+                      <div class="item-info">
+                        <div class="item-name">Sprite (500ml)</div>
+                        <div class="item-price">$3.50</div>
+                        <div class="item-stock low">Stock: 8</div>
+                      </div>
+                      <div class="item-actions">
+                        <label class="toggle-switch">
+                          <input type="checkbox" checked />
+                          <span class="toggle-slider"></span>
+                        </label>
+                        <button class="btn btn-sm btn-outline edit-item-btn">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline delete-item-btn">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="item-card">
+                      <div class="item-info">
+                        <div class="item-name">Fanta (500ml)</div>
+                        <div class="item-price">$3.50</div>
+                        <div class="item-stock">Stock: 64</div>
+                      </div>
+                      <div class="item-actions">
+                        <label class="toggle-switch">
+                          <input type="checkbox" checked />
+                          <span class="toggle-slider"></span>
+                        </label>
+                        <button class="btn btn-sm btn-outline edit-item-btn">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline delete-item-btn">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <span class="text-gray-600 text-sm"
+                    >Total Category Revenue: $1,428.00</span
+                  >
+                  <button class="btn btn-sm btn-outline">View All Items</button>
+                </div>
+              </div>
+
+              <!-- Desserts Category -->
+              <div class="card category-card">
+                <div class="card-header">
+                  <div class="category-header">
+                    <div>
+                      <div class="category-name">Desserts</div>
+                      <div class="category-items-count">
+                        5 items • 87 sold today
+                      </div>
+                    </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" checked />
+                      <span class="toggle-slider"></span>
+                    </label>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="items-list">
+                    <div class="item-card">
+                      <div class="item-info">
+                        <div class="item-name">Chocolate Brownie</div>
+                        <div class="item-price">$5.99</div>
+                        <div class="item-stock">Stock: 24</div>
+                      </div>
+                      <div class="item-actions">
+                        <label class="toggle-switch">
+                          <input type="checkbox" checked />
+                          <span class="toggle-slider"></span>
+                        </label>
+                        <button class="btn btn-sm btn-outline edit-item-btn">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline delete-item-btn">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="item-card">
+                      <div class="item-info">
+                        <div class="item-name">Ice Cream Sundae</div>
+                        <div class="item-price">$6.50</div>
+                        <div class="item-stock">Stock: 18</div>
+                      </div>
+                      <div class="item-actions">
+                        <label class="toggle-switch">
+                          <input type="checkbox" checked />
+                          <span class="toggle-slider"></span>
+                        </label>
+                        <button class="btn btn-sm btn-outline edit-item-btn">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline delete-item-btn">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="item-card">
+                      <div class="item-info">
+                        <div class="item-name">Chocolate Chip Cookies</div>
+                        <div class="item-price">$4.25</div>
+                        <div class="item-stock">Stock: 42</div>
+                      </div>
+                      <div class="item-actions">
+                        <label class="toggle-switch">
+                          <input type="checkbox" checked />
+                          <span class="toggle-slider"></span>
+                        </label>
+                        <button class="btn btn-sm btn-outline edit-item-btn">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline delete-item-btn">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="item-card">
+                      <div class="item-info">
+                        <div class="item-name">Apple Pie Slice</div>
+                        <div class="item-price">$5.25</div>
+                        <div class="item-stock low">Stock: 3</div>
+                      </div>
+                      <div class="item-actions">
+                        <label class="toggle-switch">
+                          <input type="checkbox" />
+                          <span class="toggle-slider"></span>
+                        </label>
+                        <button class="btn btn-sm btn-outline edit-item-btn">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline delete-item-btn">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <span class="text-gray-600 text-sm"
+                    >Total Category Revenue: $682.45</span
+                  >
+                  <button class="btn btn-sm btn-outline">View All Items</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ===== LIVE ORDERS PAGE ===== -->
+          <section class="page" id="live-orders-page">
+            <div class="page-header">
+              <h1 class="page-title">
+                Live Orders
+                <span class="badge badge-pending ml-3" id="new-orders-count"
+                  >3 New</span
+                >
+              </h1>
+              <div class="page-actions">
+                <button class="btn btn-outline" id="sound-toggle-btn">
+                  <i class="fas fa-volume-up"></i>
+                  <span>Sound On</span>
+                </button>
+                <button class="btn btn-outline" id="auto-refresh-btn">
+                  <i class="fas fa-sync-alt"></i>
+                  <span>Auto Refresh: On</span>
+                </button>
+                <button class="btn btn-primary" id="refresh-orders-btn">
+                  <i class="fas fa-redo"></i> Refresh Now
+                </button>
+              </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-container mb-6">
+              <div class="filter-group">
+                <div class="filter-label">Order Status</div>
+                <select class="filter-select" id="order-status-filter">
+                  <option value="all">All Orders</option>
+                  <option value="pending">Pending</option>
+                  <option value="accepted">Accepted</option>
+                  <option value="preparing">Preparing</option>
+                  <option value="ready">Ready</option>
+                  <option value="completed">Completed</option>
+                  <option value="declined">Declined</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <div class="filter-label">Time Range</div>
+                <select class="filter-select" id="time-range-filter">
+                  <option value="last-hour">Last Hour</option>
+                  <option value="today" selected>Today</option>
+                  <option value="last-24">Last 24 Hours</option>
+                  <option value="custom">Custom Range</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <div class="filter-label">Search Orders</div>
+                <div class="search-container">
+                  <i class="fas fa-search search-icon"></i>
+                  <input
+                    type="text"
+                    class="search-input"
+                    placeholder="Order ID, customer, item..."
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Orders Grid -->
+            <div class="orders-grid">
+              <!-- New Order 1 -->
+              <div class="card order-card new">
+                <div class="card-header">
+                  <div class="order-header">
+                    <div class="order-id">#ORD-7845</div>
+                    <div class="order-time">Just now</div>
+                  </div>
+                  <span class="badge badge-pending">New</span>
+                </div>
+                <div class="card-body">
+                  <div class="mb-4">
+                    <div class="flex items-center gap-3 mb-2">
+                      <div
+                        class="user-avatar"
+                        style="
+                          width: 32px;
+                          height: 32px;
+                          font-size: var(--font-size-sm);
+                        "
+                      >
+                        AT
+                      </div>
+                      <div>
+                        <div class="font-medium">Alex Turner</div>
+                        <div class="text-xs text-gray-500">
+                          Table 12 • 4 guests
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="order-items mb-4">
+                    <div class="order-item">
+                      <div class="item-name">Classic Popcorn (Large)</div>
+                      <div class="item-quantity">x2</div>
+                      <div class="font-medium">$17.98</div>
+                    </div>
+                    <div class="order-item">
+                      <div class="item-name">Coca-Cola (500ml)</div>
+                      <div class="item-quantity">x1</div>
+                      <div class="font-medium">$3.50</div>
+                    </div>
+                    <div class="order-item">
+                      <div class="item-name">Chocolate Brownie</div>
+                      <div class="item-quantity">x1</div>
+                      <div class="font-medium">$5.99</div>
+                    </div>
+                  </div>
+
+                  <div class="order-footer">
+                    <div>
+                      <div class="text-xs text-gray-500">Subtotal</div>
+                      <div class="order-total">$27.47</div>
+                    </div>
+                    <div class="order-actions">
+                      <button class="btn btn-danger btn-sm decline-order-btn">
+                        <i class="fas fa-times"></i> Decline
+                      </button>
+                      <button class="btn btn-success btn-sm accept-order-btn">
+                        <i class="fas fa-check"></i> Accept
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- New Order 2 -->
+              <div class="card order-card new">
+                <div class="card-header">
+                  <div class="order-header">
+                    <div class="order-id">#ORD-7844</div>
+                    <div class="order-time">2 minutes ago</div>
+                  </div>
+                  <span class="badge badge-pending">New</span>
+                </div>
+                <div class="card-body">
+                  <div class="mb-4">
+                    <div class="flex items-center gap-3 mb-2">
+                      <div
+                        class="user-avatar"
+                        style="
+                          width: 32px;
+                          height: 32px;
+                          font-size: var(--font-size-sm);
+                        "
+                      >
+                        MG
+                      </div>
+                      <div>
+                        <div class="font-medium">Maria Garcia</div>
+                        <div class="text-xs text-gray-500">
+                          Takeaway • Pickup in 15 min
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="order-items mb-4">
+                    <div class="order-item">
+                      <div class="item-name">Caramel Popcorn (Medium)</div>
+                      <div class="item-quantity">x1</div>
+                      <div class="font-medium">$6.99</div>
+                    </div>
+                    <div class="order-item">
+                      <div class="item-name">Pepsi (500ml)</div>
+                      <div class="item-quantity">x2</div>
+                      <div class="font-medium">$7.00</div>
+                    </div>
+                  </div>
+
+                  <div class="order-footer">
+                    <div>
+                      <div class="text-xs text-gray-500">Subtotal</div>
+                      <div class="order-total">$13.99</div>
+                    </div>
+                    <div class="order-actions">
+                      <button class="btn btn-danger btn-sm decline-order-btn">
+                        <i class="fas fa-times"></i> Decline
+                      </button>
+                      <button class="btn btn-success btn-sm accept-order-btn">
+                        <i class="fas fa-check"></i> Accept
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Accepted Order -->
+              <div class="card order-card">
+                <div class="card-header">
+                  <div class="order-header">
+                    <div class="order-id">#ORD-7843</div>
+                    <div class="order-time">8 minutes ago</div>
+                  </div>
+                  <span class="badge badge-accepted">Accepted</span>
+                </div>
+                <div class="card-body">
+                  <div class="mb-4">
+                    <div class="flex items-center gap-3 mb-2">
+                      <div
+                        class="user-avatar"
+                        style="
+                          width: 32px;
+                          height: 32px;
+                          font-size: var(--font-size-sm);
+                        "
+                      >
+                        DK
+                      </div>
+                      <div>
+                        <div class="font-medium">David Kim</div>
+                        <div class="text-xs text-gray-500">
+                          Delivery • ETA 25 min
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="order-items mb-4">
+                    <div class="order-item">
+                      <div class="item-name">Cheese Popcorn (Small)</div>
+                      <div class="item-quantity">x3</div>
+                      <div class="font-medium">$14.97</div>
+                    </div>
+                    <div class="order-item">
+                      <div class="item-name">Sprite (500ml)</div>
+                      <div class="item-quantity">x1</div>
+                      <div class="font-medium">$3.50</div>
+                    </div>
+                  </div>
+
+                  <div class="order-footer">
+                    <div>
+                      <div class="text-xs text-gray-500">Subtotal</div>
+                      <div class="order-total">$18.47</div>
+                    </div>
+                    <div class="order-actions">
+                      <button class="btn btn-outline btn-sm mark-preparing-btn">
+                        <i class="fas fa-utensils"></i> Mark Preparing
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Preparing Order -->
+              <div class="card order-card">
+                <div class="card-header">
+                  <div class="order-header">
+                    <div class="order-id">#ORD-7842</div>
+                    <div class="order-time">15 minutes ago</div>
+                  </div>
+                  <span class="badge badge-preparing">Preparing</span>
+                </div>
+                <div class="card-body">
+                  <div class="mb-4">
+                    <div class="flex items-center gap-3 mb-2">
+                      <div
+                        class="user-avatar"
+                        style="
+                          width: 32px;
+                          height: 32px;
+                          font-size: var(--font-size-sm);
+                        "
+                      >
+                        LW
+                      </div>
+                      <div>
+                        <div class="font-medium">Lisa Wang</div>
+                        <div class="text-xs text-gray-500">
+                          Table 8 • 2 guests
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="order-items mb-4">
+                    <div class="order-item">
+                      <div class="item-name">Ice Cream Sundae</div>
+                      <div class="item-quantity">x2</div>
+                      <div class="font-medium">$13.00</div>
+                    </div>
+                  </div>
+
+                  <div class="order-footer">
+                    <div>
+                      <div class="text-xs text-gray-500">Subtotal</div>
+                      <div class="order-total">$13.00</div>
+                    </div>
+                    <div class="order-actions">
+                      <button class="btn btn-success btn-sm mark-ready-btn">
+                        <i class="fas fa-check-circle"></i> Mark Ready
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ready Order -->
+              <div class="card order-card">
+                <div class="card-header">
+                  <div class="order-header">
+                    <div class="order-id">#ORD-7841</div>
+                    <div class="order-time">25 minutes ago</div>
+                  </div>
+                  <span class="badge badge-ready">Ready for Pickup</span>
+                </div>
+                <div class="card-body">
+                  <div class="mb-4">
+                    <div class="flex items-center gap-3 mb-2">
+                      <div
+                        class="user-avatar"
+                        style="
+                          width: 32px;
+                          height: 32px;
+                          font-size: var(--font-size-sm);
+                        "
+                      >
+                        JM
+                      </div>
+                      <div>
+                        <div class="font-medium">James Miller</div>
+                        <div class="text-xs text-gray-500">
+                          Takeaway • Waiting 5 min
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="order-items mb-4">
+                    <div class="order-item">
+                      <div class="item-name">Classic Popcorn (Large)</div>
+                      <div class="item-quantity">x1</div>
+                      <div class="font-medium">$8.99</div>
+                    </div>
+                    <div class="order-item">
+                      <div class="item-name">Coca-Cola (500ml)</div>
+                      <div class="item-quantity">x3</div>
+                      <div class="font-medium">$10.50</div>
+                    </div>
+                  </div>
+
+                  <div class="order-footer">
+                    <div>
+                      <div class="text-xs text-gray-500">Subtotal</div>
+                      <div class="order-total">$19.49</div>
+                    </div>
+                    <div class="order-actions">
+                      <button class="btn btn-primary btn-sm mark-completed-btn">
+                        <i class="fas fa-check-double"></i> Mark Completed
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ===== ORDERS HISTORY PAGE ===== -->
+          <section class="page" id="orders-history-page">
+            <div class="page-header">
+              <h1 class="page-title">Orders History</h1>
+              <div class="page-actions">
+                <button class="btn btn-outline" id="export-csv-btn">
+                  <i class="fas fa-file-csv"></i> Export CSV
+                </button>
+                <button class="btn btn-outline" id="export-pdf-btn">
+                  <i class="fas fa-file-pdf"></i> Export PDF
+                </button>
+                <button class="btn btn-primary" id="filter-orders-btn">
+                  <i class="fas fa-filter"></i> Filter Orders
+                </button>
+              </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-container mb-6">
+              <div class="filter-group">
+                <div class="filter-label">Date Range</div>
+                <div class="flex gap-2">
+                  <input type="date" class="date-picker" value="2023-10-15" />
+                  <span class="flex items-center text-gray-500">to</span>
+                  <input type="date" class="date-picker" value="2023-10-22" />
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <div class="filter-label">Order Status</div>
+                <select class="filter-select" id="history-status-filter">
+                  <option value="all">All Status</option>
+                  <option value="completed">Completed</option>
+                  <option value="accepted">Accepted</option>
+                  <option value="declined">Declined</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <div class="filter-label">Payment Method</div>
+                <select class="filter-select" id="payment-method-filter">
+                  <option value="all">All Methods</option>
+                  <option value="card">Credit Card</option>
+                  <option value="cash">Cash</option>
+                  <option value="mobile">Mobile Payment</option>
+                  <option value="online">Online</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <div class="filter-label">Search</div>
+                <div class="search-container">
+                  <i class="fas fa-search search-icon"></i>
+                  <input
+                    type="text"
+                    class="search-input"
+                    placeholder="Order ID, customer, item..."
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Recent Orders</div>
+                <div class="card-actions">
+                  <div class="pagination">
+                    <button class="pagination-btn" disabled>
+                      <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span class="pagination-info">Page 1 of 12</span>
+                    <button class="pagination-btn">
+                      <i class="fas fa-chevron-right"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="table-container">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Tax</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th>Date & Time</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="font-semibold">#ORD-7845</td>
+                        <td>
+                          <div class="font-medium">Alex Turner</div>
+                          <div class="text-xs text-gray-500">
+                            alex@email.com
+                          </div>
+                        </td>
+                        <td>4 items</td>
+                        <td class="font-semibold">$27.47</td>
+                        <td class="text-gray-600">$1.37</td>
+                        <td>
+                          <span class="badge badge-accepted">Card</span>
+                        </td>
+                        <td>
+                          <span class="badge badge-pending">Pending</span>
+                        </td>
+                        <td>
+                          <div class="font-medium">Today</div>
+                          <div class="text-xs text-gray-500">2:15 PM</div>
+                        </td>
+                        <td>
+                          <button class="btn btn-sm btn-outline">
+                            <i class="fas fa-eye"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="font-semibold">#ORD-7844</td>
+                        <td>
+                          <div class="font-medium">Maria Garcia</div>
+                          <div class="text-xs text-gray-500">
+                            +1 (555) 123-4567
+                          </div>
+                        </td>
+                        <td>3 items</td>
+                        <td class="font-semibold">$13.99</td>
+                        <td class="text-gray-600">$0.70</td>
+                        <td>
+                          <span class="badge badge-accepted">Cash</span>
+                        </td>
+                        <td>
+                          <span class="badge badge-pending">Pending</span>
+                        </td>
+                        <td>
+                          <div class="font-medium">Today</div>
+                          <div class="text-xs text-gray-500">2:10 PM</div>
+                        </td>
+                        <td>
+                          <button class="btn btn-sm btn-outline">
+                            <i class="fas fa-eye"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="font-semibold">#ORD-7843</td>
+                        <td>
+                          <div class="font-medium">David Kim</div>
+                          <div class="text-xs text-gray-500">
+                            david@email.com
+                          </div>
+                        </td>
+                        <td>4 items</td>
+                        <td class="font-semibold">$18.47</td>
+                        <td class="text-gray-600">$0.92</td>
+                        <td>
+                          <span class="badge badge-accepted">Mobile</span>
+                        </td>
+                        <td>
+                          <span class="badge badge-accepted">Accepted</span>
+                        </td>
+                        <td>
+                          <div class="font-medium">Today</div>
+                          <div class="text-xs text-gray-500">1:55 PM</div>
+                        </td>
+                        <td>
+                          <button class="btn btn-sm btn-outline">
+                            <i class="fas fa-eye"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="font-semibold">#ORD-7842</td>
+                        <td>
+                          <div class="font-medium">Lisa Wang</div>
+                          <div class="text-xs text-gray-500">
+                            +1 (555) 987-6543
+                          </div>
+                        </td>
+                        <td>2 items</td>
+                        <td class="font-semibold">$13.00</td>
+                        <td class="text-gray-600">$0.65</td>
+                        <td>
+                          <span class="badge badge-accepted">Card</span>
+                        </td>
+                        <td>
+                          <span class="badge badge-completed">Completed</span>
+                        </td>
+                        <td>
+                          <div class="font-medium">Today</div>
+                          <div class="text-xs text-gray-500">1:40 PM</div>
+                        </td>
+                        <td>
+                          <button class="btn btn-sm btn-outline">
+                            <i class="fas fa-eye"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="font-semibold">#ORD-7841</td>
+                        <td>
+                          <div class="font-medium">James Miller</div>
+                          <div class="text-xs text-gray-500">
+                            james@email.com
+                          </div>
+                        </td>
+                        <td>4 items</td>
+                        <td class="font-semibold">$19.49</td>
+                        <td class="text-gray-600">$0.97</td>
+                        <td>
+                          <span class="badge badge-accepted">Online</span>
+                        </td>
+                        <td>
+                          <span class="badge badge-declined">Declined</span>
+                        </td>
+                        <td>
+                          <div class="font-medium">Today</div>
+                          <div class="text-xs text-gray-500">1:20 PM</div>
+                        </td>
+                        <td>
+                          <button class="btn btn-sm btn-outline">
+                            <i class="fas fa-eye"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="font-semibold">#ORD-7840</td>
+                        <td>
+                          <div class="font-medium">Robert Brown</div>
+                          <div class="text-xs text-gray-500">
+                            +1 (555) 456-7890
+                          </div>
+                        </td>
+                        <td>5 items</td>
+                        <td class="font-semibold">$67.20</td>
+                        <td class="text-gray-600">$3.36</td>
+                        <td>
+                          <span class="badge badge-accepted">Card</span>
+                        </td>
+                        <td>
+                          <span class="badge badge-completed">Completed</span>
+                        </td>
+                        <td>
+                          <div class="font-medium">Today</div>
+                          <div class="text-xs text-gray-500">11:45 AM</div>
+                        </td>
+                        <td>
+                          <button class="btn btn-sm btn-outline">
+                            <i class="fas fa-eye"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="font-semibold">#ORD-7839</td>
+                        <td>
+                          <div class="font-medium">Sarah Johnson</div>
+                          <div class="text-xs text-gray-500">
+                            sarah@email.com
+                          </div>
+                        </td>
+                        <td>1 item</td>
+                        <td class="font-semibold">$12.99</td>
+                        <td class="text-gray-600">$0.65</td>
+                        <td>
+                          <span class="badge badge-accepted">Cash</span>
+                        </td>
+                        <td>
+                          <span class="badge badge-completed">Completed</span>
+                        </td>
+                        <td>
+                          <div class="font-medium">Today</div>
+                          <div class="text-xs text-gray-500">11:20 AM</div>
+                        </td>
+                        <td>
+                          <button class="btn btn-sm btn-outline">
+                            <i class="fas fa-eye"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="text-gray-600 text-sm">
+                  Showing 1-7 of 142 orders • Total Revenue: $2,847.50
+                </div>
+                <div class="pagination">
+                  <button class="pagination-btn" disabled>
+                    <i class="fas fa-chevron-left"></i>
+                  </button>
+                  <button class="pagination-btn active">1</button>
+                  <button class="pagination-btn">2</button>
+                  <button class="pagination-btn">3</button>
+                  <button class="pagination-btn">4</button>
+                  <button class="pagination-btn">5</button>
+                  <span class="pagination-info">...</span>
+                  <button class="pagination-btn">12</button>
+                  <button class="pagination-btn">
+                    <i class="fas fa-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ===== ANALYTICS PAGE ===== -->
+          <section class="page" id="analytics-page">
+            <div class="page-header">
+              <h1 class="page-title">Analytics & Insights</h1>
+              <div class="page-actions">
+                <select class="filter-select">
+                  <option>Last 7 Days</option>
+                  <option>Last 30 Days</option>
+                  <option>This Month</option>
+                  <option>Last Month</option>
+                  <option>Custom Range</option>
+                </select>
+                <button class="btn btn-primary">
+                  <i class="fas fa-download"></i> Export Report
+                </button>
+              </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-grid mb-6">
+              <div class="card summary-card">
+                <div class="summary-icon revenue">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="summary-info">
+                  <div class="summary-label">Monthly Revenue</div>
+                  <div class="summary-value">$24,847</div>
+                  <div class="summary-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>15.2% from last month</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card summary-card">
+                <div class="summary-icon orders">
+                  <i class="fas fa-shopping-bag"></i>
+                </div>
+                <div class="summary-info">
+                  <div class="summary-label">Total Orders</div>
+                  <div class="summary-value">1,247</div>
+                  <div class="summary-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>8.2% from last month</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card summary-card">
+                <div class="summary-icon customers">
+                  <i class="fas fa-users"></i>
+                </div>
+                <div class="summary-info">
+                  <div class="summary-label">New Customers</div>
+                  <div class="summary-value">89</div>
+                  <div class="summary-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>12.5% from last month</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card summary-card">
+                <div class="summary-icon average">
+                  <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="summary-info">
+                  <div class="summary-label">Avg. Order Value</div>
+                  <div class="summary-value">$24.80</div>
+                  <div class="summary-change negative">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>2.1% from last month</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-container mb-6">
+              <div class="card chart-card">
+                <div class="card-header">
+                  <div class="card-title">Revenue Trend (Last 6 Months)</div>
+                  <div class="card-actions">
+                    <button class="btn btn-sm btn-outline">View Details</button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="chart-container">
+                    <canvas id="monthly-revenue-chart"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card chart-card">
+                <div class="card-header">
+                  <div class="card-title">Top Selling Categories</div>
+                  <div class="card-actions">
+                    <select class="filter-select">
+                      <option>By Revenue</option>
+                      <option>By Quantity</option>
+                      <option>By Orders</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="chart-container">
+                    <canvas id="categories-chart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Peak Hours & Customer Insights -->
+            <div class="charts-container">
+              <div class="card chart-card">
+                <div class="card-header">
+                  <div class="card-title">Peak Order Hours</div>
+                  <div class="card-actions">
+                    <button class="btn btn-sm btn-outline">View Details</button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="chart-container">
+                    <canvas id="peak-hours-chart"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">Customer Insights</div>
+                  <div class="card-actions">
+                    <button class="btn btn-sm btn-outline">View All</button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-container">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Customer</th>
+                          <th>Orders</th>
+                          <th>Total Spent</th>
+                          <th>Last Order</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <div class="flex items-center gap-3">
+                              <div
+                                class="user-avatar"
+                                style="
+                                  width: 32px;
+                                  height: 32px;
+                                  font-size: var(--font-size-sm);
+                                "
+                              >
+                                JS
+                              </div>
+                              <div>
+                                <div class="font-medium">John Smith</div>
+                                <div class="text-xs text-gray-500">
+                                  john@email.com
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td>28</td>
+                          <td class="font-semibold">$842.50</td>
+                          <td>
+                            <div class="font-medium">Today</div>
+                            <div class="text-xs text-gray-500">2:15 PM</div>
+                          </td>
+                          <td>
+                            <span class="badge badge-active">Regular</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="flex items-center gap-3">
+                              <div
+                                class="user-avatar"
+                                style="
+                                  width: 32px;
+                                  height: 32px;
+                                  font-size: var(--font-size-sm);
+                                "
+                              >
+                                EW
+                              </div>
+                              <div>
+                                <div class="font-medium">Emma Wilson</div>
+                                <div class="text-xs text-gray-500">
+                                  emma@email.com
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td>19</td>
+                          <td class="font-semibold">$567.25</td>
+                          <td>
+                            <div class="font-medium">Yesterday</div>
+                            <div class="text-xs text-gray-500">6:30 PM</div>
+                          </td>
+                          <td>
+                            <span class="badge badge-active">Regular</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="flex items-center gap-3">
+                              <div
+                                class="user-avatar"
+                                style="
+                                  width: 32px;
+                                  height: 32px;
+                                  font-size: var(--font-size-sm);
+                                "
+                              >
+                                RB
+                              </div>
+                              <div>
+                                <div class="font-medium">Robert Brown</div>
+                                <div class="text-xs text-gray-500">
+                                  robert@email.com
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td>15</td>
+                          <td class="font-semibold">$423.80</td>
+                          <td>
+                            <div class="font-medium">Oct 20</div>
+                            <div class="text-xs text-gray-500">3:45 PM</div>
+                          </td>
+                          <td>
+                            <span class="badge badge-active">Regular</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="flex items-center gap-3">
+                              <div
+                                class="user-avatar"
+                                style="
+                                  width: 32px;
+                                  height: 32px;
+                                  font-size: var(--font-size-sm);
+                                "
+                              >
+                                SJ
+                              </div>
+                              <div>
+                                <div class="font-medium">Sarah Johnson</div>
+                                <div class="text-xs text-gray-500">
+                                  sarah@email.com
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td>12</td>
+                          <td class="font-semibold">$298.75</td>
+                          <td>
+                            <div class="font-medium">Oct 18</div>
+                            <div class="text-xs text-gray-500">7:15 PM</div>
+                          </td>
+                          <td>
+                            <span class="badge badge-active">Regular</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="flex items-center gap-3">
+                              <div
+                                class="user-avatar"
+                                style="
+                                  width: 32px;
+                                  height: 32px;
+                                  font-size: var(--font-size-sm);
+                                "
+                              >
+                                ML
+                              </div>
+                              <div>
+                                <div class="font-medium">Michael Lee</div>
+                                <div class="text-xs text-gray-500">
+                                  michael@email.com
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td>8</td>
+                          <td class="font-semibold">$215.40</td>
+                          <td>
+                            <div class="font-medium">Oct 15</div>
+                            <div class="text-xs text-gray-500">1:30 PM</div>
+                          </td>
+                          <td>
+                            <span class="badge badge-inactive">Inactive</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ===== TAX & SETTINGS PAGE ===== -->
+          <section class="page" id="tax-page">
+            <div class="page-header">
+              <h1 class="page-title">Tax & Settings</h1>
+              <div class="page-actions">
+                <button class="btn btn-primary" id="save-settings-btn">
+                  <i class="fas fa-save"></i> Save Changes
+                </button>
+              </div>
+            </div>
+
+            <div class="grid gap-6">
+              <!-- Tax Configuration -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">Tax Configuration</div>
+                </div>
+                <div class="card-body">
+                  <div class="tax-configuration">
+                    <div class="form-group">
+                      <label class="form-label required">Tax Percentage</label>
+                      <div class="tax-input-container">
+                        <input
+                          type="number"
+                          class="tax-input"
+                          id="tax-percentage"
+                          value="5.0"
+                          min="0"
+                          max="20"
+                          step="0.1"
+                        />
+                        <span
+                          style="
+                            font-size: var(--font-size-lg);
+                            font-weight: var(--font-weight-semibold);
+                          "
+                          >%</span
+                        >
+                      </div>
+                      <p class="form-hint">
+                        Set the tax percentage that will be applied to all
+                        orders. Current: 5.0%
+                      </p>
+                    </div>
+
+                    <div class="tax-preview mb-6">
+                      <div class="tax-preview-item">
+                        <span class="text-gray-600">Subtotal:</span>
+                        <span class="font-medium">$50.00</span>
+                      </div>
+                      <div class="tax-preview-item">
+                        <span class="text-gray-600"
+                          >Tax (<span id="tax-preview-percentage">5.0</span
+                          >%):</span
+                        >
+                        <span class="font-medium" id="tax-preview-amount"
+                          >$2.50</span
+                        >
+                      </div>
+                      <div class="tax-preview-item total">
+                        <span>Total Amount:</span>
+                        <span class="font-bold" id="tax-preview-total"
+                          >$52.50</span
+                        >
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label"
+                        >Tax Inclusive/Exclusive Pricing</label
+                      >
+                      <div class="flex items-center gap-4">
+                        <label class="flex items-center gap-2">
+                          <input type="radio" name="tax-type" checked />
+                          <span>Tax Exclusive (Add tax at checkout)</span>
+                        </label>
+                        <label class="flex items-center gap-2">
+                          <input type="radio" name="tax-type" />
+                          <span>Tax Inclusive (Prices include tax)</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- General Settings -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">General Settings</div>
+                </div>
+                <div class="card-body">
+                  <div class="grid gap-6">
+                    <div class="form-group">
+                      <label class="form-label">Currency</label>
+                      <select class="form-input">
+                        <option>US Dollar ($) - USD</option>
+                        <option>Euro (€) - EUR</option>
+                        <option>British Pound (£) - GBP</option>
+                        <option>Japanese Yen (¥) - JPY</option>
+                        <option>Canadian Dollar ($) - CAD</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Time Zone</label>
+                      <select class="form-input">
+                        <option>Eastern Time (ET)</option>
+                        <option>Central Time (CT)</option>
+                        <option>Mountain Time (MT)</option>
+                        <option selected>Pacific Time (PT)</option>
+                        <option>GMT (Greenwich Mean Time)</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Date Format</label>
+                      <select class="form-input">
+                        <option>MM/DD/YYYY</option>
+                        <option selected>DD/MM/YYYY</option>
+                        <option>YYYY-MM-DD</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Auto-refresh Live Orders</label>
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                          <label class="toggle-switch">
+                            <input
+                              type="checkbox"
+                              checked
+                              id="auto-refresh-toggle"
+                            />
+                            <span class="toggle-slider"></span>
+                          </label>
+                          <span>Enable auto-refresh</span>
+                        </div>
+                        <select class="filter-select" style="width: auto">
+                          <option>Every 30 seconds</option>
+                          <option>Every 1 minute</option>
+                          <option>Every 2 minutes</option>
+                          <option>Every 5 minutes</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label"
+                        >Low Stock Alert Threshold</label
+                      >
+                      <div class="flex items-center gap-3">
+                        <input
+                          type="number"
+                          class="form-input"
+                          style="width: 100px"
+                          value="10"
+                          min="1"
+                        />
+                        <span>items</span>
+                      </div>
+                      <p class="form-hint">
+                        Receive notifications when item stock falls below this
+                        number
+                      </p>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Order Notification Sound</label>
+                      <div class="flex items-center gap-3">
+                        <label class="toggle-switch">
+                          <input
+                            type="checkbox"
+                            checked
+                            id="sound-notification-toggle"
+                          />
+                          <span class="toggle-slider"></span>
+                        </label>
+                        <span>Play sound for new orders</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Business Information -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">Business Information</div>
+                </div>
+                <div class="card-body">
+                  <div class="grid gap-6">
+                    <div class="form-group">
+                      <label class="form-label required">Business Name</label>
+                      <input
+                        type="text"
+                        class="form-input"
+                        value="FoodFlow Restaurant"
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Business Address</label>
+                      <textarea class="form-input form-textarea">
+123 Main Street, San Francisco, CA 94107</textarea
+                      >
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Contact Phone</label>
+                      <input
+                        type="text"
+                        class="form-input"
+                        value="+1 (555) 123-4567"
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Contact Email</label>
+                      <input
+                        type="email"
+                        class="form-input"
+                        value="info@foodflow.com"
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Business Hours</label>
+                      <div class="grid gap-3">
+                        <div class="flex items-center justify-between">
+                          <span>Monday - Friday</span>
+                          <span>9:00 AM - 10:00 PM</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span>Saturday</span>
+                          <span>10:00 AM - 11:00 PM</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span>Sunday</span>
+                          <span>10:00 AM - 9:00 PM</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <!-- ===== MOBILE MENU TOGGLE ===== -->
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <!-- ===== TOAST CONTAINER ===== -->
+      <div class="toast-container" id="toast-container"></div>
+
+      <!-- ===== MODALS ===== -->
+      <!-- Add Category Modal -->
+      <div class="modal-overlay" id="add-category-modal">
+        <div class="modal">
+          <div class="modal-header">
+            <div class="modal-title">Add New Category</div>
+            <button class="modal-close" id="close-category-modal">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label required">Category Name</label>
+              <input
+                type="text"
+                class="form-input"
+                id="category-name"
+                placeholder="e.g., Snacks, Beverages"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Description</label>
+              <textarea
+                class="form-input form-textarea"
+                placeholder="Brief description of this category"
+              ></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category Image</label>
+              <div
+                class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center"
+              >
+                <i
+                  class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-3"
+                ></i>
+                <p class="text-gray-600 mb-2">Drag & drop or click to upload</p>
+                <p class="text-xs text-gray-500">PNG, JPG up to 5MB</p>
+                <input type="file" class="hidden" id="category-image" />
+                <button class="btn btn-outline btn-sm mt-3">Choose File</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="flex items-center gap-3">
+                <label class="toggle-switch">
+                  <input type="checkbox" checked id="category-active-toggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+                <span>Active (visible to customers)</span>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" id="cancel-category-btn">
+              Cancel
+            </button>
+            <button class="btn btn-primary" id="save-category-btn">
+              Create Category
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add/Edit Item Modal -->
+      <div class="modal-overlay" id="item-modal">
+        <div class="modal">
+          <div class="modal-header">
+            <div class="modal-title" id="item-modal-title">Add New Item</div>
+            <button class="modal-close" id="close-item-modal">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label required">Item Name</label>
+              <input
+                type="text"
+                class="form-input"
+                id="item-name"
+                placeholder="e.g., Classic Popcorn"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label required">Category</label>
+              <select class="form-input" id="item-category">
+                <option>Popcorn</option>
+                <option>Soft Drinks</option>
+                <option>Desserts</option>
+                <option>Snacks</option>
+                <option>Combo Meals</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div class="form-group">
+                <label class="form-label required">Price ($)</label>
+                <input
+                  type="number"
+                  class="form-input"
+                  id="item-price"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label required">Initial Stock</label>
+                <input
+                  type="number"
+                  class="form-input"
+                  id="item-stock"
+                  placeholder="0"
+                  min="0"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Description</label>
+              <textarea
+                class="form-input form-textarea"
+                id="item-description"
+                placeholder="Describe the item, ingredients, etc."
+              ></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Item Image</label>
+              <div
+                class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center"
+              >
+                <i
+                  class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-3"
+                ></i>
+                <p class="text-gray-600 mb-2">Drag & drop or click to upload</p>
+                <p class="text-xs text-gray-500">PNG, JPG up to 5MB</p>
+                <input type="file" class="hidden" id="item-image" />
+                <button class="btn btn-outline btn-sm mt-3">Choose File</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="flex items-center gap-3">
+                <label class="toggle-switch">
+                  <input type="checkbox" checked id="item-active-toggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+                <span>Available (customers can order)</span>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" id="cancel-item-btn">Cancel</button>
+            <button class="btn btn-primary" id="save-item-btn">
+              Save Item
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delete Confirmation Modal -->
+      <div class="modal-overlay" id="delete-modal">
+        <div class="modal">
+          <div class="modal-header">
+            <div class="modal-title">Confirm Delete</div>
+            <button class="modal-close" id="close-delete-modal">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="text-center py-4">
+              <i
+                class="fas fa-exclamation-triangle text-4xl text-yellow-500 mb-4"
+              ></i>
+              <h3 class="text-lg font-semibold mb-2" id="delete-title">
+                Delete Item
+              </h3>
+              <p class="text-gray-600" id="delete-message">
+                Are you sure you want to delete this item? This action cannot be
+                undone.
+              </p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" id="cancel-delete-btn">
+              Cancel
+            </button>
+            <button class="btn btn-danger" id="confirm-delete-btn">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ===== GLOBAL VARIABLES =====
+      let currentPage = "dashboard";
+      let charts = {};
+      let isDarkMode = false;
+      let autoRefreshInterval = null;
+      let soundEnabled = true;
+      let newOrdersCount = 3;
+
+      // ===== DOM ELEMENTS =====
+      const sidebar = document.querySelector(".sidebar");
+      const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
+      const themeToggle = document.getElementById("theme-toggle");
+      const navBtns = document.querySelectorAll(".nav-btn");
+      const pages = document.querySelectorAll(".page");
+      const currentPageElement = document.getElementById("current-page");
+      const toastContainer = document.getElementById("toast-container");
+      const liveOrdersBadge = document.getElementById("live-orders-badge");
+      const newOrdersCountElement = document.getElementById("new-orders-count");
+
+      // Buttons
+      const exportReportBtn = document.getElementById("export-report-btn");
+      const refreshDataBtn = document.getElementById("refresh-data-btn");
+      const addCategoryBtn = document.getElementById("add-category-btn");
+      const addItemBtn = document.getElementById("add-item-btn");
+      const soundToggleBtn = document.getElementById("sound-toggle-btn");
+      const autoRefreshBtn = document.getElementById("auto-refresh-btn");
+      const refreshOrdersBtn = document.getElementById("refresh-orders-btn");
+      const exportCsvBtn = document.getElementById("export-csv-btn");
+      const exportPdfBtn = document.getElementById("export-pdf-btn");
+      const filterOrdersBtn = document.getElementById("filter-orders-btn");
+      const saveSettingsBtn = document.getElementById("save-settings-btn");
+
+      // Modals
+      const addCategoryModal = document.getElementById("add-category-modal");
+      const itemModal = document.getElementById("item-modal");
+      const deleteModal = document.getElementById("delete-modal");
+
+      // Tax Configuration
+      const taxPercentageInput = document.getElementById("tax-percentage");
+      const taxPreviewPercentage = document.getElementById(
+        "tax-preview-percentage",
+      );
+      const taxPreviewAmount = document.getElementById("tax-preview-amount");
+      const taxPreviewTotal = document.getElementById("tax-preview-total");
+
+      // ===== INITIALIZATION =====
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initialize charts
+        initCharts();
+
+        // Set up event listeners
+        setupEventListeners();
+
+        // Update tax preview
+        updateTaxPreview();
+
+        // Show welcome toast
+        setTimeout(() => {
+          showToast("Welcome to FoodFlow Manager Dashboard!", "info");
+        }, 1000);
+
+        // Start auto-refresh for live orders
+        startAutoRefresh();
+
+        // Simulate new orders
+        simulateNewOrders();
+      });
+
+      // ===== EVENT LISTENERS SETUP =====
+      function setupEventListeners() {
+        // Navigation buttons
+        navBtns.forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const pageId = this.getAttribute("data-page");
+            switchPage(pageId);
+
+            // Update active nav button
+            navBtns.forEach((nav) => nav.classList.remove("active"));
+            this.classList.add("active");
+
+            // Close mobile menu on button click
+            if (window.innerWidth < 1200) {
+              sidebar.classList.remove("active");
+              mobileMenuToggle.classList.remove("active");
+            }
+          });
+        });
+
+        // Mobile menu toggle
+        mobileMenuToggle.addEventListener("click", function () {
+          sidebar.classList.toggle("active");
+          this.classList.toggle("active");
+        });
+
+        // Theme toggle
+        themeToggle.addEventListener("click", toggleTheme);
+
+        // Page-specific buttons
+        exportReportBtn?.addEventListener("click", exportReport);
+        refreshDataBtn?.addEventListener("click", refreshDashboardData);
+        addCategoryBtn?.addEventListener("click", () =>
+          openModal("add-category"),
+        );
+        addItemBtn?.addEventListener("click", () => openModal("add-item"));
+        soundToggleBtn?.addEventListener("click", toggleSound);
+        autoRefreshBtn?.addEventListener("click", toggleAutoRefresh);
+        refreshOrdersBtn?.addEventListener("click", refreshLiveOrders);
+        exportCsvBtn?.addEventListener("click", exportToCSV);
+        exportPdfBtn?.addEventListener("click", exportToPDF);
+        filterOrdersBtn?.addEventListener("click", filterOrders);
+        saveSettingsBtn?.addEventListener("click", saveSettings);
+
+        // Tax configuration
+        taxPercentageInput?.addEventListener("input", updateTaxPreview);
+
+        // Modal events
+        setupModalEvents();
+
+        // Order actions
+        document.addEventListener("click", handleOrderActions);
+
+        // Item actions
+        document.addEventListener("click", handleItemActions);
+
+        // Keyboard shortcuts
+        document.addEventListener("keydown", handleKeyboardShortcuts);
+
+        // Search functionality
+        setupSearch();
+      }
+
+      // ===== PAGE MANAGEMENT =====
+      function switchPage(pageId) {
+        // Hide all pages
+        pages.forEach((page) => {
+          page.classList.remove("active");
+        });
+
+        // Show selected page
+        const selectedPage = document.getElementById(`${pageId}-page`);
+        if (selectedPage) {
+          selectedPage.classList.add("active");
+          currentPage = pageId;
+
+          // Update breadcrumb
+          updateBreadcrumb(pageId);
+
+          // Update page title
+          document.title = `${getPageName(pageId)} | FoodFlow Manager`;
+
+          // Initialize charts for the page if needed
+          if (pageId === "dashboard" || pageId === "analytics") {
+            initCharts();
+          }
+        }
+      }
+
+      function updateBreadcrumb(pageId) {
+        const pageNames = {
+          dashboard: "Dashboard",
+          items: "Items & Categories",
+          "live-orders": "Live Orders",
+          "orders-history": "Orders History",
+          analytics: "Analytics",
+          tax: "Tax & Settings",
+        };
+
+        currentPageElement.textContent = pageNames[pageId] || "Dashboard";
+      }
+
+      function getPageName(pageId) {
+        const pageNames = {
+          dashboard: "Dashboard",
+          items: "Items & Categories",
+          "live-orders": "Live Orders",
+          "orders-history": "Orders History",
+          analytics: "Analytics",
+          tax: "Tax & Settings",
+        };
+
+        return pageNames[pageId] || "Dashboard";
+      }
+
+      // ===== CHART INITIALIZATION =====
+      function initCharts() {
+        // Destroy existing charts
+        Object.values(charts).forEach((chart) => {
+          if (chart) chart.destroy();
+        });
+
+        charts = {};
+
+        // Revenue Chart (Line)
+        const revenueCtx = document
+          .getElementById("revenue-chart")
+          ?.getContext("2d");
+        if (revenueCtx) {
+          charts.revenue = new Chart(revenueCtx, {
+            type: "line",
+            data: {
+              labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+              datasets: [
+                {
+                  label: "Revenue ($)",
+                  data: [1200, 1900, 1700, 2500, 2200, 3000, 2800],
+                  borderColor: "rgb(58, 87, 232)",
+                  backgroundColor: "rgba(58, 87, 232, 0.1)",
+                  borderWidth: 3,
+                  fill: true,
+                  tension: 0.4,
+                  pointBackgroundColor: "rgb(58, 87, 232)",
+                  pointBorderColor: "#fff",
+                  pointBorderWidth: 2,
+                  pointRadius: 5,
+                  pointHoverRadius: 7,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  mode: "index",
+                  intersect: false,
+                  backgroundColor: "rgba(0, 0, 0, 0.8)",
+                  titleFont: { size: 14 },
+                  bodyFont: { size: 13 },
+                  padding: 12,
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: {
+                    color: "rgba(0, 0, 0, 0.05)",
+                    drawBorder: false,
+                  },
+                  ticks: {
+                    callback: function (value) {
+                      return "$" + value.toLocaleString();
+                    },
+                    font: { size: 12 },
+                  },
+                },
+                x: {
+                  grid: { display: false },
+                  ticks: { font: { size: 12 } },
+                },
+              },
+            },
+          });
+        }
+
+        // Orders Chart (Doughnut)
+        const ordersCtx = document
+          .getElementById("orders-chart")
+          ?.getContext("2d");
+        if (ordersCtx) {
+          charts.orders = new Chart(ordersCtx, {
+            type: "doughnut",
+            data: {
+              labels: ["Completed", "Pending", "Accepted", "Declined"],
+              datasets: [
+                {
+                  data: [65, 15, 12, 8],
+                  backgroundColor: [
+                    "rgb(34, 197, 94)",
+                    "rgb(245, 158, 11)",
+                    "rgb(58, 87, 232)",
+                    "rgb(239, 68, 68)",
+                  ],
+                  borderWidth: 0,
+                  hoverOffset: 20,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: "right",
+                  labels: {
+                    usePointStyle: true,
+                    padding: 20,
+                    font: { size: 12 },
+                  },
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      return `${context.label}: ${context.parsed}%`;
+                    },
+                  },
+                },
+              },
+              cutout: "70%",
+            },
+          });
+        }
+
+        // Monthly Revenue Chart (Bar)
+        const monthlyRevenueCtx = document
+          .getElementById("monthly-revenue-chart")
+          ?.getContext("2d");
+        if (monthlyRevenueCtx) {
+          charts.monthlyRevenue = new Chart(monthlyRevenueCtx, {
+            type: "bar",
+            data: {
+              labels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct"],
+              datasets: [
+                {
+                  label: "Monthly Revenue ($)",
+                  data: [18500, 19200, 21000, 22500, 24800, 26800],
+                  backgroundColor: "rgba(58, 87, 232, 0.8)",
+                  borderColor: "rgb(58, 87, 232)",
+                  borderWidth: 1,
+                  borderRadius: 6,
+                  borderSkipped: false,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      return `Revenue: $${context.parsed.y.toLocaleString()}`;
+                    },
+                  },
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: {
+                    color: "rgba(0, 0, 0, 0.05)",
+                    drawBorder: false,
+                  },
+                  ticks: {
+                    callback: function (value) {
+                      return "$" + value / 1000 + "k";
+                    },
+                    font: { size: 12 },
+                  },
+                },
+                x: {
+                  grid: { display: false },
+                  ticks: { font: { size: 12 } },
+                },
+              },
+            },
+          });
+        }
+
+        // Categories Chart (Bar - Horizontal)
+        const categoriesCtx = document
+          .getElementById("categories-chart")
+          ?.getContext("2d");
+        if (categoriesCtx) {
+          charts.categories = new Chart(categoriesCtx, {
+            type: "bar",
+            data: {
+              labels: [
+                "Popcorn",
+                "Soft Drinks",
+                "Desserts",
+                "Snacks",
+                "Combo Meals",
+              ],
+              datasets: [
+                {
+                  label: "Revenue ($)",
+                  data: [5200, 3800, 2100, 1800, 3200],
+                  backgroundColor: [
+                    "rgba(58, 87, 232, 0.8)",
+                    "rgba(34, 197, 94, 0.8)",
+                    "rgba(245, 158, 11, 0.8)",
+                    "rgba(156, 163, 175, 0.8)",
+                    "rgba(139, 92, 246, 0.8)",
+                  ],
+                  borderWidth: 0,
+                  borderRadius: 4,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              indexAxis: "y",
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      return `Revenue: $${context.parsed.x.toLocaleString()}`;
+                    },
+                  },
+                },
+              },
+              scales: {
+                x: {
+                  beginAtZero: true,
+                  grid: {
+                    color: "rgba(0, 0, 0, 0.05)",
+                    drawBorder: false,
+                  },
+                  ticks: {
+                    callback: function (value) {
+                      return "$" + value.toLocaleString();
+                    },
+                    font: { size: 12 },
+                  },
+                },
+                y: {
+                  grid: { display: false },
+                  ticks: { font: { size: 12 } },
+                },
+              },
+            },
+          });
+        }
+
+        // Peak Hours Chart
+        const peakHoursCtx = document
+          .getElementById("peak-hours-chart")
+          ?.getContext("2d");
+        if (peakHoursCtx) {
+          charts.peakHours = new Chart(peakHoursCtx, {
+            type: "bar",
+            data: {
+              labels: ["10AM", "12PM", "2PM", "4PM", "6PM", "8PM", "10PM"],
+              datasets: [
+                {
+                  label: "Orders",
+                  data: [45, 78, 52, 63, 92, 85, 48],
+                  backgroundColor: "rgba(139, 92, 246, 0.8)",
+                  borderColor: "rgb(139, 92, 246)",
+                  borderWidth: 1,
+                  borderRadius: 4,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      return `Orders: ${context.parsed.y}`;
+                    },
+                  },
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: {
+                    color: "rgba(0, 0, 0, 0.05)",
+                    drawBorder: false,
+                  },
+                  ticks: {
+                    font: { size: 12 },
+                    precision: 0,
+                  },
+                },
+                x: {
+                  grid: { display: false },
+                  ticks: { font: { size: 12 } },
+                },
+              },
+            },
+          });
+        }
+      }
+
+      // ===== THEME MANAGEMENT =====
+      function toggleTheme() {
+        isDarkMode = !isDarkMode;
+        document.body.classList.toggle("dark-mode");
+
+        const icon = themeToggle.querySelector("i");
+        if (isDarkMode) {
+          icon.classList.remove("fa-moon");
+          icon.classList.add("fa-sun");
+          showToast("Dark mode enabled", "info");
+        } else {
+          icon.classList.remove("fa-sun");
+          icon.classList.add("fa-moon");
+          showToast("Light mode enabled", "info");
+        }
+
+        // Update charts for dark mode
+        initCharts();
+      }
+
+      // ===== TAX CONFIGURATION =====
+      function updateTaxPreview() {
+        if (!taxPercentageInput) return;
+
+        const taxPercentage = parseFloat(taxPercentageInput.value) || 0;
+        const subtotal = 50.0;
+        const taxAmount = (subtotal * taxPercentage) / 100;
+        const total = subtotal + taxAmount;
+
+        taxPreviewPercentage.textContent = taxPercentage.toFixed(1);
+        taxPreviewAmount.textContent = "$" + taxAmount.toFixed(2);
+        taxPreviewTotal.textContent = "$" + total.toFixed(2);
+      }
+
+      // ===== TOAST NOTIFICATIONS =====
+      function showToast(message, type = "info") {
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+
+        let icon = "fas fa-info-circle";
+        if (type === "success") icon = "fas fa-check-circle";
+        if (type === "error") icon = "fas fa-exclamation-circle";
+        if (type === "warning") icon = "fas fa-exclamation-triangle";
+
+        toast.innerHTML = `
+                <i class="toast-icon ${icon}"></i>
+                <div class="toast-message">${message}</div>
+                <button class="toast-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+        toastContainer.appendChild(toast);
+
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+          removeToast(toast);
+        }, 5000);
+
+        // Close button
+        toast.querySelector(".toast-close").addEventListener("click", () => {
+          removeToast(toast);
+        });
+      }
+
+      function removeToast(toast) {
+        toast.style.animation = "slideIn 0.3s ease reverse forwards";
+        setTimeout(() => {
+          if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+          }
+        }, 300);
+      }
+
+      // ===== MODAL MANAGEMENT =====
+      function setupModalEvents() {
+        // Add Category Modal
+        document
+          .getElementById("close-category-modal")
+          ?.addEventListener("click", () => closeModal("add-category"));
+        document
+          .getElementById("cancel-category-btn")
+          ?.addEventListener("click", () => closeModal("add-category"));
+        document
+          .getElementById("save-category-btn")
+          ?.addEventListener("click", saveCategory);
+
+        // Item Modal
+        document
+          .getElementById("close-item-modal")
+          ?.addEventListener("click", () => closeModal("item"));
+        document
+          .getElementById("cancel-item-btn")
+          ?.addEventListener("click", () => closeModal("item"));
+        document
+          .getElementById("save-item-btn")
+          ?.addEventListener("click", saveItem);
+
+        // Delete Modal
+        document
+          .getElementById("close-delete-modal")
+          ?.addEventListener("click", () => closeModal("delete"));
+        document
+          .getElementById("cancel-delete-btn")
+          ?.addEventListener("click", () => closeModal("delete"));
+        document
+          .getElementById("confirm-delete-btn")
+          ?.addEventListener("click", confirmDelete);
+
+        // Close modals when clicking outside
+        document.querySelectorAll(".modal-overlay").forEach((modal) => {
+          modal.addEventListener("click", function (e) {
+            if (e.target === this) {
+              closeAllModals();
+            }
+          });
+        });
+      }
+
+      function openModal(modalType) {
+        closeAllModals();
+
+        const modalMap = {
+          "add-category": addCategoryModal,
+          "add-item": itemModal,
+          "edit-item": itemModal,
+          delete: deleteModal,
+        };
+
+        const modal = modalMap[modalType];
+        if (modal) {
+          modal.classList.add("active");
+          document.body.style.overflow = "hidden";
+        }
+      }
+
+      function closeModal(modalType) {
+        const modalMap = {
+          "add-category": addCategoryModal,
+          item: itemModal,
+          delete: deleteModal,
+        };
+
+        const modal = modalMap[modalType];
+        if (modal) {
+          modal.classList.remove("active");
+          document.body.style.overflow = "auto";
+        }
+      }
+
+      function closeAllModals() {
+        document.querySelectorAll(".modal-overlay").forEach((modal) => {
+          modal.classList.remove("active");
+        });
+        document.body.style.overflow = "auto";
+      }
+
+      // ===== ORDER MANAGEMENT =====
+      function handleOrderActions(e) {
+        // Accept order
+        if (e.target.closest(".accept-order-btn")) {
+          const orderCard = e.target.closest(".order-card");
+          acceptOrder(orderCard);
+        }
+
+        // Decline order
+        if (e.target.closest(".decline-order-btn")) {
+          const orderCard = e.target.closest(".order-card");
+          declineOrder(orderCard);
+        }
+
+        // Mark as preparing
+        if (e.target.closest(".mark-preparing-btn")) {
+          const orderCard = e.target.closest(".order-card");
+          markOrderAsPreparing(orderCard);
+        }
+
+        // Mark as ready
+        if (e.target.closest(".mark-ready-btn")) {
+          const orderCard = e.target.closest(".order-card");
+          markOrderAsReady(orderCard);
+        }
+
+        // Mark as completed
+        if (e.target.closest(".mark-completed-btn")) {
+          const orderCard = e.target.closest(".order-card");
+          markOrderAsCompleted(orderCard);
+        }
+      }
+
+      function acceptOrder(orderCard) {
+        const orderId = orderCard.querySelector(".order-id").textContent;
+        const badge = orderCard.querySelector(".badge");
+
+        badge.className = "badge badge-accepted";
+        badge.textContent = "Accepted";
+
+        // Update button
+        const actionsDiv = orderCard.querySelector(".order-actions");
+        actionsDiv.innerHTML = `
+                <button class="btn btn-outline btn-sm mark-preparing-btn">
+                    <i class="fas fa-utensils"></i> Mark Preparing
+                </button>
+            `;
+
+        // Remove new order animation
+        orderCard.classList.remove("new");
+
+        // Update new orders count
+        updateNewOrdersCount(-1);
+
+        showToast(`Order ${orderId} accepted`, "success");
+
+        // Play sound if enabled
+        if (soundEnabled) {
+          playNotificationSound();
+        }
+      }
+
+      function declineOrder(orderCard) {
+        const orderId = orderCard.querySelector(".order-id").textContent;
+        const badge = orderCard.querySelector(".badge");
+
+        badge.className = "badge badge-declined";
+        badge.textContent = "Declined";
+
+        // Update button
+        const actionsDiv = orderCard.querySelector(".order-actions");
+        actionsDiv.innerHTML = `
+                <button class="btn btn-outline btn-sm" disabled>
+                    <i class="fas fa-times-circle"></i> Declined
+                </button>
+            `;
+
+        // Remove new order animation
+        orderCard.classList.remove("new");
+
+        // Update new orders count
+        updateNewOrdersCount(-1);
+
+        showToast(`Order ${orderId} declined`, "error");
+      }
+
+      function markOrderAsPreparing(orderCard) {
+        const orderId = orderCard.querySelector(".order-id").textContent;
+        const badge = orderCard.querySelector(".badge");
+
+        badge.className = "badge badge-preparing";
+        badge.textContent = "Preparing";
+
+        // Update button
+        const actionsDiv = orderCard.querySelector(".order-actions");
+        actionsDiv.innerHTML = `
+                <button class="btn btn-success btn-sm mark-ready-btn">
+                    <i class="fas fa-check-circle"></i> Mark Ready
+                </button>
+            `;
+
+        showToast(`Order ${orderId} is now being prepared`, "info");
+      }
+
+      function markOrderAsReady(orderCard) {
+        const orderId = orderCard.querySelector(".order-id").textContent;
+        const badge = orderCard.querySelector(".badge");
+
+        badge.className = "badge badge-ready";
+        badge.textContent = "Ready for Pickup";
+
+        // Update button
+        const actionsDiv = orderCard.querySelector(".order-actions");
+        actionsDiv.innerHTML = `
+                <button class="btn btn-primary btn-sm mark-completed-btn">
+                    <i class="fas fa-check-double"></i> Mark Completed
+                </button>
+            `;
+
+        showToast(`Order ${orderId} is ready for pickup`, "success");
+      }
+
+      function markOrderAsCompleted(orderCard) {
+        const orderId = orderCard.querySelector(".order-id").textContent;
+        const badge = orderCard.querySelector(".badge");
+
+        badge.className = "badge badge-completed";
+        badge.textContent = "Completed";
+
+        // Update button
+        const actionsDiv = orderCard.querySelector(".order-actions");
+        actionsDiv.innerHTML = `
+                <button class="btn btn-outline btn-sm" disabled>
+                    <i class="fas fa-check-double"></i> Completed
+                </button>
+            `;
+
+        showToast(`Order ${orderId} marked as completed`, "success");
+      }
+
+      function updateNewOrdersCount(change) {
+        newOrdersCount += change;
+        if (newOrdersCount < 0) newOrdersCount = 0;
+
+        // Update badge in sidebar
+        if (liveOrdersBadge) {
+          liveOrdersBadge.textContent = newOrdersCount;
+          if (newOrdersCount === 0) {
+            liveOrdersBadge.style.display = "none";
+          } else {
+            liveOrdersBadge.style.display = "flex";
+          }
+        }
+
+        // Update badge in page header
+        if (newOrdersCountElement) {
+          newOrdersCountElement.textContent = `${newOrdersCount} New`;
+          if (newOrdersCount === 0) {
+            newOrdersCountElement.style.display = "none";
+          } else {
+            newOrdersCountElement.style.display = "inline-flex";
+          }
+        }
+      }
+
+      // ===== ITEM MANAGEMENT =====
+      function handleItemActions(e) {
+        // Edit item
+        if (e.target.closest(".edit-item-btn")) {
+          const itemCard = e.target.closest(".item-card");
+          const itemName = itemCard.querySelector(".item-name").textContent;
+          openEditItemModal(itemName);
+        }
+
+        // Delete item
+        if (e.target.closest(".delete-item-btn")) {
+          const itemCard = e.target.closest(".item-card");
+          const itemName = itemCard.querySelector(".item-name").textContent;
+          openDeleteModal("item", itemName, itemCard);
+        }
+
+        // Toggle item availability
+        if (e.target.closest(".toggle-switch input")) {
+          const toggle = e.target.closest(".toggle-switch input");
+          const itemCard = toggle.closest(".item-card");
+
+          if (itemCard) {
+            const itemName = itemCard.querySelector(".item-name").textContent;
+            const status = toggle.checked ? "activated" : "deactivated";
+            showToast(`Item "${itemName}" ${status}`, "info");
+          }
+        }
+      }
+
+      function openEditItemModal(itemName) {
+        // Set modal title
+        document.getElementById("item-modal-title").textContent =
+          `Edit ${itemName}`;
+
+        // Populate form with item data (in a real app, this would come from an API)
+        document.getElementById("item-name").value = itemName;
+        document.getElementById("item-price").value = "8.99";
+        document.getElementById("item-stock").value = "42";
+        document.getElementById("item-description").value =
+          "Classic butter popcorn, large size";
+
+        // Open modal
+        openModal("edit-item");
+      }
+
+      function openDeleteModal(type, name, element) {
+        const modal = deleteModal;
+        const title = modal.querySelector("#delete-title");
+        const message = modal.querySelector("#delete-message");
+
+        if (type === "item") {
+          title.textContent = "Delete Item";
+          message.textContent = `Are you sure you want to delete "${name}"? This action cannot be undone.`;
+
+          // Store reference to the element to delete
+          modal.dataset.deleteType = "item";
+          modal.dataset.deleteElement = element;
+          modal.dataset.deleteName = name;
+        }
+
+        openModal("delete");
+      }
+
+      function confirmDelete() {
+        const modal = deleteModal;
+        const type = modal.dataset.deleteType;
+        const element = modal.dataset.deleteElement;
+        const name = modal.dataset.deleteName;
+
+        if (type === "item" && element) {
+          // In a real app, this would be an API call
+          element.remove();
+          showToast(`Item "${name}" deleted successfully`, "success");
+        }
+
+        closeModal("delete");
+      }
+
+      // ===== FUNCTIONALITY FUNCTIONS =====
+      function saveCategory() {
+        const categoryName = document
+          .getElementById("category-name")
+          .value.trim();
+
+        if (!categoryName) {
+          showToast("Please enter a category name", "error");
+          return;
+        }
+
+        // In a real app, this would be an API call
+        showToast(`Category "${categoryName}" created successfully`, "success");
+        closeModal("add-category");
+
+        // Reset form
+        document.getElementById("category-name").value = "";
+      }
+
+      function saveItem() {
+        const itemName = document.getElementById("item-name").value.trim();
+        const itemPrice = document.getElementById("item-price").value;
+
+        if (!itemName || !itemPrice) {
+          showToast("Please fill in all required fields", "error");
+          return;
+        }
+
+        // In a real app, this would be an API call
+        const isEdit = document
+          .getElementById("item-modal-title")
+          .textContent.startsWith("Edit");
+        const message = isEdit ? "updated" : "created";
+
+        showToast(`Item "${itemName}" ${message} successfully`, "success");
+        closeModal("item");
+
+        // Reset form
+        if (!isEdit) {
+          document.getElementById("item-name").value = "";
+          document.getElementById("item-price").value = "";
+          document.getElementById("item-stock").value = "";
+          document.getElementById("item-description").value = "";
+        }
+      }
+
+      function toggleSound() {
+        soundEnabled = !soundEnabled;
+
+        const icon = soundToggleBtn.querySelector("i");
+        const text = soundToggleBtn.querySelector("span");
+
+        if (soundEnabled) {
+          icon.classList.remove("fa-volume-mute");
+          icon.classList.add("fa-volume-up");
+          text.textContent = "Sound On";
+          showToast("Sound notifications enabled", "info");
+        } else {
+          icon.classList.remove("fa-volume-up");
+          icon.classList.add("fa-volume-mute");
+          text.textContent = "Sound Off";
+          showToast("Sound notifications disabled", "info");
+        }
+      }
+
+      function toggleAutoRefresh() {
+        const icon = autoRefreshBtn.querySelector("i");
+        const text = autoRefreshBtn.querySelector("span");
+
+        if (autoRefreshInterval) {
+          clearInterval(autoRefreshInterval);
+          autoRefreshInterval = null;
+          icon.classList.remove("fa-pause");
+          icon.classList.add("fa-sync-alt");
+          text.textContent = "Auto Refresh: Off";
+          showToast("Auto-refresh disabled", "info");
+        } else {
+          startAutoRefresh();
+          icon.classList.remove("fa-sync-alt");
+          icon.classList.add("fa-pause");
+          text.textContent = "Auto Refresh: On";
+          showToast("Auto-refresh enabled", "info");
+        }
+      }
+
+      function startAutoRefresh() {
+        if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+
+        autoRefreshInterval = setInterval(() => {
+          if (currentPage === "live-orders") {
+            refreshLiveOrders();
+          }
+        }, 30000); // Every 30 seconds
+      }
+
+      function refreshLiveOrders() {
+        // In a real app, this would fetch new orders from an API
+        showToast("Live orders refreshed", "info");
+      }
+
+      function refreshDashboardData() {
+        // In a real app, this would refresh all dashboard data from APIs
+        showToast("Dashboard data refreshed", "success");
+
+        // Update summary cards with new data
+        updateSummaryCards();
+      }
+
+      function updateSummaryCards() {
+        // In a real app, this would update with real data from API
+        const todayRevenue = document.querySelector(
+          ".summary-card:nth-child(1) .summary-value",
+        );
+        const todayOrders = document.querySelector(
+          ".summary-card:nth-child(2) .summary-value",
+        );
+
+        if (todayRevenue) {
+          const current = parseFloat(
+            todayRevenue.textContent.replace("$", "").replace(",", ""),
+          );
+          const randomChange = Math.random() * 0.1 - 0.05; // -5% to +5%
+          const newValue = current * (1 + randomChange);
+          todayRevenue.textContent = "$" + newValue.toFixed(2);
+        }
+
+        if (todayOrders) {
+          const current = parseInt(todayOrders.textContent);
+          const randomChange = Math.floor(Math.random() * 11) - 5; // -5 to +5
+          const newValue = Math.max(0, current + randomChange);
+          todayOrders.textContent = newValue;
+        }
+      }
+
+      function exportReport() {
+        showToast("Report exported successfully", "success");
+        // In a real app, this would generate and download a report
+      }
+
+      function exportToCSV() {
+        showToast("CSV file exported successfully", "success");
+        // In a real app, this would generate and download a CSV file
+      }
+
+      function exportToPDF() {
+        showToast("PDF file exported successfully", "success");
+        // In a real app, this would generate and download a PDF file
+      }
+
+      function filterOrders() {
+        showToast("Filters applied successfully", "info");
+        // In a real app, this would apply filters to the orders table
+      }
+
+      function saveSettings() {
+        showToast("Settings saved successfully", "success");
+        // In a real app, this would save settings to the backend
+      }
+
+      function playNotificationSound() {
+        // Create a simple notification sound
+        const audioContext = new (
+          window.AudioContext || window.webkitAudioContext
+        )();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.value = 800;
+        oscillator.type = "sine";
+
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(
+          0.01,
+          audioContext.currentTime + 0.5,
+        );
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+      }
+
+      function simulateNewOrders() {
+        // Simulate new orders every 2 minutes
+        setInterval(() => {
+          if (currentPage === "live-orders" && Math.random() > 0.5) {
+            updateNewOrdersCount(1);
+            showToast("New order received!", "info");
+
+            if (soundEnabled) {
+              playNotificationSound();
+            }
+          }
+        }, 120000); // Every 2 minutes
+      }
+
+      // ===== SEARCH FUNCTIONALITY =====
+      function setupSearch() {
+        const searchInputs = document.querySelectorAll(".search-input");
+
+        searchInputs.forEach((input) => {
+          input.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+              performSearch(this.value);
+            }
+          });
+        });
+      }
+
+      function performSearch(query) {
+        if (!query.trim()) return;
+
+        // In a real app, this would search across the current page's data
+        showToast(`Searching for: "${query}"`, "info");
+      }
+
+      // ===== KEYBOARD SHORTCUTS =====
+      function handleKeyboardShortcuts(e) {
+        // Ctrl/Cmd + K to focus search
+        if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+          e.preventDefault();
+          const searchInput = document.querySelector(".search-input");
+          if (searchInput) searchInput.focus();
+        }
+
+        // Escape to close modals
+        if (e.key === "Escape") {
+          closeAllModals();
+        }
+
+        // Ctrl/Cmd + 1-6 to switch pages
+        if ((e.ctrlKey || e.metaKey) && e.key >= "1" && e.key <= "6") {
+          e.preventDefault();
+          const pageIndex = parseInt(e.key) - 1;
+          const navBtnsArray = Array.from(navBtns);
+          if (navBtnsArray[pageIndex]) {
+            navBtnsArray[pageIndex].click();
+          }
+        }
+      }
+
+      // ===== RESPONSIVE BEHAVIOR =====
+      window.addEventListener("resize", function () {
+        if (window.innerWidth >= 1200) {
+          sidebar.classList.remove("active");
+          mobileMenuToggle.classList.remove("active");
+        }
+      });
+    </script>
+  </body>
+</html>
