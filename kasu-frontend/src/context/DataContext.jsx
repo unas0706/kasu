@@ -27,7 +27,7 @@ import axios from "axios";
 
 const DataContext = createContext();
 
-const API = "https://kasu-4z4t.onrender.com//api";
+const API = "https://kasu-4z4t.onrender.com/api";
 
 export const useData = () => {
   const context = useContext(DataContext);

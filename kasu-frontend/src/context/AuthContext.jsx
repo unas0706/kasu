@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "https://kasu-4z4t.onrender.com//api/auth/login",
+        "https://kasu-4z4t.onrender.com/api/auth/login",
         {
           email,
           password,
