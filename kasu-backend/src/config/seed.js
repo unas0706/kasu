@@ -10,14 +10,10 @@ const Tax = require("../models/tax.model");
 const Order = require("../models/order.model");
 
 mongoose
-  .connect(
-    process.env.MONGODB_URI ||
-      "mongodb+srv://unas:0706@cluster0.c4ugsxt.mongodb.net/?appName=Cluster0",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    },
-  )
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
