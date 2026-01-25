@@ -17,13 +17,9 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(
-  localStorage.getItem("token") || null
-);
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
-  
 
   useEffect(() => {
     // Check for stored user session
@@ -42,7 +38,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://kasu-4z4t.onrender.com//api/auth/login",
         {
           email,
           password,
@@ -54,9 +50,9 @@ export const AuthProvider = ({ children }) => {
         },
       );
 
-localStorage.setItem("token", response.data.token);
-      setToken(response.data.token)
-      
+      localStorage.setItem("token", response.data.token);
+      setToken(response.data.token);
+
       setUser(response.data.user);
       localStorage.setItem(
         "kasu_geeta_user",
