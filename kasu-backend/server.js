@@ -20,7 +20,7 @@ const io = socketIo(server, {
 app.use(helmet());
 app.use(
   cors({
-    origin: "*", // later replace with your frontend URL
+    origin: "*",
   }),
 );
 app.use(morgan("dev"));

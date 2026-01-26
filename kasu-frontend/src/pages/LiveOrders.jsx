@@ -17,10 +17,17 @@ import {
   Truck,
   Search,
 } from "lucide-react";
+import { set } from "date-fns";
 
 const LiveOrders = () => {
-  const { orders, updateOrderStatus } = useData();
-  const [liveOrders, setLiveOrders] = useState([]);
+  const {
+    orders,
+    updateOrderStatus,
+    liveOrders: live,
+    audioRef,
+    setLiveOrders: setLive,
+  } = useData();
+  const [liveOrders, setLiveOrders] = useState(live);
   const [filters, setFilters] = useState({
     status: "all",
     timeRange: "today",
@@ -31,92 +38,115 @@ const LiveOrders = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
-    filterOrders();
+    setLiveOrders(live);
+    console.log(live);
+  }, [live]);
 
-    if (autoRefresh) {
-      const interval = setInterval(() => {
-        filterOrders();
-        // Simulate new orders
-        if (Math.random() > 0.7) {
-          toast.info("New order received!");
-          if (soundEnabled) {
-            // Play notification sound
-            new Audio("/notification.mp3").play().catch(() => {});
-          }
-        }
-      }, 30000); // Refresh every 30 seconds
+  // useEffect(() => {
+  //   filterOrders();
 
-      return () => clearInterval(interval);
+  //   if (autoRefresh) {
+  //     const interval = setInterval(() => {
+  //       filterOrders();
+  //       // Simulate new orders
+  //       if (Math.random() > 0.7) {
+  //         toast.info("New order received!");
+  //         if (soundEnabled) {
+  //           // Play notification sound
+  //           new Audio("/notification.mp3").play().catch(() => {});
+  //         }
+  //       }
+  //     }, 30000); // Refresh every 30 seconds
+
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [filters, autoRefresh, orders]);
+
+  // const filterOrders = () => {
+  //   let filtered = [...orders];
+
+  //   // Filter by status
+  //   if (filters.status !== "all") {
+  //     filtered = filtered.filter((order) => order.status === filters.status);
+  //   }
+
+  //   // Filter by time range (simplified)
+  //   if (filters.timeRange === "today") {
+  //     const today = new Date().toISOString().split("T")[0];
+  //     filtered = filtered.filter((order) => order.createdAt.startsWith(today));
+  //   } else if (filters.timeRange === "last-hour") {
+  //     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+  //     filtered = filtered.filter(
+  //       (order) => new Date(order.createdAt) > oneHourAgo,
+  //     );
+  //   }
+
+  //   // Filter by search
+  //   if (filters.search) {
+  //     const searchLower = filters.search.toLowerCase();
+  //     filtered = filtered.filter(
+  //       (order) =>
+  //         order.orderId.toLowerCase().includes(searchLower) ||
+  //         order.customer.name.toLowerCase().includes(searchLower) ||
+  //         order.items.some((item) =>
+  //           item.name.toLowerCase().includes(searchLower),
+  //         ),
+  //     );
+  //   }
+
+  //   setLiveOrders(
+  //     filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
+  //   );
+  // };
+
+  // const handleStatusUpdate = (orderId, status) => {
+  //   updateOrderStatus(orderId, status);
+
+  //   const messages = {
+  //     accepted: "Order accepted and moved to preparation",
+  //     preparing: "Order is now being prepared",
+  //     ready: "Order is ready for pickup/delivery",
+  //     completed: "Order marked as completed",
+  //     declined: "Order has been declined",
+  //   };
+
+  //   toast.success(messages[status] || "Order status updated");
+  // };
+
+  // const handleRefresh = () => {
+  //   setIsRefreshing(true);
+  //   filterOrders();
+  //   setTimeout(() => {
+  //     setIsRefreshing(false);
+  //     toast.success("Orders refreshed");
+  //   }, 1000);
+  // };
+
+  // const toggleAutoRefresh = () => {
+  //   setAutoRefresh(!autoRefresh);
+  //   toast.info(`Auto-refresh ${!autoRefresh ? "enabled" : "disabled"}`);
+  // };
+
+  const muteAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.muted = true;
     }
-  }, [filters, autoRefresh, orders]);
-
-  const filterOrders = () => {
-    let filtered = [...orders];
-
-    // Filter by status
-    if (filters.status !== "all") {
-      filtered = filtered.filter((order) => order.status === filters.status);
-    }
-
-    // Filter by time range (simplified)
-    if (filters.timeRange === "today") {
-      const today = new Date().toISOString().split("T")[0];
-      filtered = filtered.filter((order) => order.createdAt.startsWith(today));
-    } else if (filters.timeRange === "last-hour") {
-      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-      filtered = filtered.filter(
-        (order) => new Date(order.createdAt) > oneHourAgo,
-      );
-    }
-
-    // Filter by search
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase();
-      filtered = filtered.filter(
-        (order) =>
-          order.orderId.toLowerCase().includes(searchLower) ||
-          order.customer.name.toLowerCase().includes(searchLower) ||
-          order.items.some((item) =>
-            item.name.toLowerCase().includes(searchLower),
-          ),
-      );
-    }
-
-    setLiveOrders(
-      filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
-    );
   };
 
-  const handleStatusUpdate = (orderId, status) => {
-    updateOrderStatus(orderId, status);
-
-    const messages = {
-      accepted: "Order accepted and moved to preparation",
-      preparing: "Order is now being prepared",
-      ready: "Order is ready for pickup/delivery",
-      completed: "Order marked as completed",
-      declined: "Order has been declined",
-    };
-
-    toast.success(messages[status] || "Order status updated");
-  };
-
-  const handleRefresh = () => {
-    setIsRefreshing(true);
-    filterOrders();
-    setTimeout(() => {
-      setIsRefreshing(false);
-      toast.success("Orders refreshed");
-    }, 1000);
-  };
-
-  const toggleAutoRefresh = () => {
-    setAutoRefresh(!autoRefresh);
-    toast.info(`Auto-refresh ${!autoRefresh ? "enabled" : "disabled"}`);
+  const unmuteAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.muted = false;
+    }
   };
 
   const toggleSound = () => {
     setSoundEnabled(!soundEnabled);
+    if (soundEnabled) {
+      muteAudio();
+    } else {
+      unmuteAudio();
+    }
+
     toast.info(`Sound notifications ${!soundEnabled ? "enabled" : "disabled"}`);
   };
 
@@ -148,68 +178,20 @@ const LiveOrders = () => {
   };
 
   const getOrderActions = (order) => {
-    switch (order.status) {
-      case "pending":
-        return (
-          <>
-            <Button
-              variant="danger"
-              size="sm"
-              icon={X}
-              onClick={() => handleStatusUpdate(order.orderId, "declined")}
-            >
-              Decline
-            </Button>
-            <Button
-              variant="success"
-              size="sm"
-              icon={Check}
-              onClick={() => handleStatusUpdate(order.orderId, "accepted")}
-            >
-              Accept
-            </Button>
-          </>
-        );
-      case "accepted":
-        return (
-          <Button
-            variant="outline"
-            size="sm"
-            icon={Utensils}
-            onClick={() => handleStatusUpdate(order.orderId, "preparing")}
-          >
-            Mark Preparing
-          </Button>
-        );
-      case "preparing":
-        return (
-          <Button
-            variant="success"
-            size="sm"
-            icon={CheckCircle}
-            onClick={() => handleStatusUpdate(order.orderId, "ready")}
-          >
-            Mark Ready
-          </Button>
-        );
-      case "ready":
-        return (
-          <Button
-            variant="primary"
-            size="sm"
-            icon={CheckSquare}
-            onClick={() => handleStatusUpdate(order.orderId, "completed")}
-          >
-            Mark Completed
-          </Button>
-        );
-      default:
-        return (
-          <Button variant="outline" size="sm" disabled>
-            {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-          </Button>
-        );
-    }
+    return (
+      <>
+        <Button
+          variant="success"
+          size="sm"
+          icon={Check}
+          onClick={() => {
+            setLive(liveOrders.filter((o) => o.orderId !== order.orderId));
+          }}
+        >
+          Confirm
+        </Button>
+      </>
+    );
   };
 
   const newOrdersCount = liveOrders.filter(
@@ -218,6 +200,16 @@ const LiveOrders = () => {
 
   return (
     <div className="page active">
+      <audio
+        ref={audioRef}
+        style={{ opacity: "0" }}
+        src="notification.mp3"
+        // preload="auto"
+        controls
+        loop
+        // muted
+      ></audio>
+
       <div className="page-header">
         <div className="flex items-center gap-3">
           <h1 className="page-title">Live Orders</h1>
@@ -236,14 +228,14 @@ const LiveOrders = () => {
           <Button
             variant="outline"
             icon={autoRefresh ? "pause" : RefreshCw}
-            onClick={toggleAutoRefresh}
+            // onClick={toggleAutoRefresh}
           >
             Auto Refresh: {autoRefresh ? "On" : "Off"}
           </Button>
           <Button
             variant="primary"
             icon={RefreshCw}
-            onClick={handleRefresh}
+            // onClick={handleRefresh}
             disabled={isRefreshing}
           >
             {isRefreshing ? "Refreshing..." : "Refresh Now"}
@@ -380,7 +372,7 @@ const LiveOrders = () => {
                     <div className="order-total">${order.total.toFixed(2)}</div>
                   </div>
                   <div className="order-actions flex gap-2">
-                    {/* {getOrderActions(order)} */}
+                    {getOrderActions(order)}
                   </div>
                 </div>
               </div>

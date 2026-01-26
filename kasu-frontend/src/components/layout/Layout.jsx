@@ -12,9 +12,9 @@ const Layout = () => {
 
   useEffect(() => {
     // Close sidebar on mobile when route changes
-    if (window.innerWidth < 1200) {
-      setIsSidebarOpen(false);
-    }
+    // if (window.innerWidth < 1200) {
+    //   setIsSidebarOpen(false);
+    // }
   }, [location]);
 
   const toggleSidebar = () => {

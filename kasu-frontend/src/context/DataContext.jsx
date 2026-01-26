@@ -4,6 +4,7 @@ import React, {
   useContext,
   useEffect,
   useCallback,
+  useRef,
 } from "react";
 import { toast } from "react-hot-toast";
 import {
@@ -24,6 +25,7 @@ import {
 } from "../utils/sampleData";
 import { ORDER_STATUS } from "../utils/constants";
 import axios from "axios";
+import socket from "../components/sockets/socket";
 
 const DataContext = createContext();
 
@@ -65,6 +67,7 @@ export const DataProvider = ({ children }) => {
   const [taxConfig, setTaxConfig] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [liveOrders, setLiveOrders] = useState([]);
 
   // Save data to localStorage whenever it changes
   useEffect(() => saveData("kasu_geeta_orders", orders), [orders]);
@@ -75,10 +78,46 @@ export const DataProvider = ({ children }) => {
     [businessSettings],
   );
   useEffect(() => saveData("kasu_geeta_tax_config", taxConfig), [taxConfig]);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     (fetchCategories(), fetchItems(), fetchOrdersHistory());
+    socket.emit("join-manager-room");
+    socket.on("new-order", (order) => {
+      console.log("Order update:", order);
+      // playNotificationSound();
+      audioRef.current.play();
+
+      setLiveOrders((prev) => {
+        // Check if order already exists
+        const orderExists = prev.some(
+          (o) => o._id === order._id || o.orderId === order.orderId,
+        );
+
+        if (orderExists) {
+          // Update existing order instead of adding duplicate
+          return prev.map((o) => (o._id === order._id ? order : o));
+        }
+
+        // Add new order to beginning
+        return [order, ...prev];
+      });
+    });
   }, []);
+
+  const playNotificationSound = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0; // Reset to start
+      audioRef.current.play().catch((e) => {
+        console.log("Audio play failed:", e);
+        // Fallback to creating new audio element
+        const audio = new Audio(
+          "C:/projects/theater/kasu-frontend/src/components/sounds/notification.mp3",
+        );
+        audio.play();
+      });
+    }
+  };
 
   const fetchCategories = async () => {
     try {
@@ -648,6 +687,9 @@ export const DataProvider = ({ children }) => {
 
   const value = {
     // State
+    setLiveOrders,
+    audioRef,
+    liveOrders,
     orders,
     categories,
     items,

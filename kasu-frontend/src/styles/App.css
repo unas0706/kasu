@@ -706,6 +706,36 @@ body {
   margin-bottom: var(--space-6);
 }
 
+/* ===== MOBILE MENU TOGGLE ===== */
+.mobile-menu-toggle {
+  display: none;
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+  color: var(--white);
+  border: none;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xl);
+  z-index: 50;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.mobile-menu-toggle:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-xl);
+}
+
+.mobile-menu-toggle.active {
+  transform: rotate(90deg);
+}
+
 @media (max-width: 1024px) {
   .charts-container {
     grid-template-columns: 1fr;
@@ -1561,6 +1591,9 @@ input:checked + .toggle-slider:before {
   .date-picker {
     width: 100%;
   }
+  .mobile-menu-toggle {
+    display: block;
+  }
 }
 
 @media (max-width: 576px) {
@@ -1584,36 +1617,9 @@ input:checked + .toggle-slider:before {
     min-width: auto;
     width: calc(100vw - var(--space-8));
   }
-}
-
-/* ===== MOBILE MENU TOGGLE ===== */
-.mobile-menu-toggle {
-  display: none;
-  position: fixed;
-  bottom: var(--space-4);
-  right: var(--space-4);
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
-  color: var(--white);
-  border: none;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-xl);
-  z-index: 50;
-  box-shadow: var(--shadow-lg);
-  cursor: pointer;
-  transition: all var(--transition-base);
-}
-
-.mobile-menu-toggle:hover {
-  transform: scale(1.05);
-  box-shadow: var(--shadow-xl);
-}
-
-.mobile-menu-toggle.active {
-  transform: rotate(90deg);
+  .mobile-menu-toggle {
+    display: block;
+  }
 }
 
 /* ===== UTILITY CLASSES ===== */
@@ -2185,6 +2191,9 @@ input:checked + .toggle-slider:before {
   .social-login {
     grid-template-columns: 1fr;
   }
+  .mobile-menu-toggle {
+    display: block;
+  }
 }
 
 @media (max-width: 480px) {
@@ -2208,6 +2217,9 @@ input:checked + .toggle-slider:before {
 
   .login-header {
     margin-bottom: var(--space-6);
+  }
+  .mobile-menu-toggle {
+    display: block;
   }
 }
 
