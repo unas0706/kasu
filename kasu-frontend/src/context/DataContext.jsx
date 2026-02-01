@@ -29,7 +29,7 @@ import socket from "../components/sockets/socket";
 
 const DataContext = createContext();
 
-const API = "https://kasu-4z4t.onrender.com/api";
+const API = "http://localhost:5000/api";
 
 export const useData = () => {
   const context = useContext(DataContext);

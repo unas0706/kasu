@@ -329,7 +329,7 @@ const LiveOrders = () => {
               </div>
 
               <div className="card-body">
-                <div className="mb-4">
+                {/* <div className="mb-4">
                   <div className="flex items-center gap-3 mb-2">
                     <div
                       className="user-avatar"
@@ -341,7 +341,6 @@ const LiveOrders = () => {
                         .join("")}
                     </div>
                     <div>
-                      <div className="font-medium">{order.customer.name}</div>
                       <div className="text-xs text-gray-500 flex items-center gap-1">
                         {getOrderTypeIcon(order.orderType)}
                         <span className="capitalize">
@@ -352,7 +351,8 @@ const LiveOrders = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
+                <div className="font-medium">{order.customer.phone}</div>
 
                 <div className="order-items mb-4">
                   {order.items.map((item, index) => (

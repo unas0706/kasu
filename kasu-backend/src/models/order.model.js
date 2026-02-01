@@ -39,19 +39,15 @@ const orderSchema = new mongoose.Schema(
       },
     },
     customer: {
-      name: {
-        type: String,
-        required: true,
-      },
-      email: {
-        type: String,
-        default: "",
-      },
+      // name: {
+      //   type: String,
+      //   required: true,
+      // },
       phone: {
         type: String,
         required: true,
       },
-      address: {
+      upiId: {
         type: String,
         default: "",
       },
@@ -79,22 +75,22 @@ const orderSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
-    status: {
-      type: String,
-      enum: [
-        "pending",
-        "accepted",
-        "preparing",
-        "ready",
-        "completed",
-        "declined",
-        "cancelled",
-      ],
-      default: "pending",
-    },
+    // status: {
+    //   type: String,
+    //   enum: [
+    //     "pending",
+    //     "accepted",
+    //     "preparing",
+    //     "ready",
+    //     "completed",
+    //     "declined",
+    //     "cancelled",
+    //   ],
+    //   default: "pending",
+    // },
     paymentMethod: {
       type: String,
-      enum: ["card", "cash", "mobile", "online"],
+      enum: ["cash", "online"],
       default: "cash",
     },
     paymentStatus: {
@@ -102,12 +98,12 @@ const orderSchema = new mongoose.Schema(
       enum: ["pending", "paid", "failed"],
       default: "pending",
     },
-    orderType: {
-      type: String,
-      enum: ["dine-in", "takeaway", "delivery"],
-      required: true,
-    },
-    tableNumber: {
+    // orderType: {
+    //   type: String,
+    //   enum: ["dine-in", "takeaway", "delivery"],
+    //   required: true,
+    // },
+    screenNumber: {
       type: String,
       default: "",
     },
@@ -115,14 +111,19 @@ const orderSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    deliveryAddress: {
+    seatRow: {
       type: String,
       default: "",
     },
-    notes: {
-      type: String,
-      default: "",
-    },
+
+    // deliveryAddress: {
+    //   type: String,
+    //   default: "",
+    // },
+    // notes: {
+    //   type: String,
+    //   default: "",
+    // },
     whatsappNotificationSent: {
       type: Boolean,
       default: false,

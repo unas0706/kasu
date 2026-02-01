@@ -25,13 +25,16 @@ const createOrder = async (req, res) => {
 
     // Validate and prepare order items
     const orderItems = [];
+
+    console.log(items);
+
     let subtotal = 0;
 
     for (const item of items) {
-      const itemDoc = await Item.findById(item.item);
+      const itemDoc = await Item.findById(item.id);
 
       if (!itemDoc) {
-        return res.status(404).json({ message: `Item ${item.item} not found` });
+        return res.status(404).json({ message: `Item ${item.id} not found` });
       }
 
       if (!itemDoc.isAvailable) {
@@ -66,7 +69,7 @@ const createOrder = async (req, res) => {
     const taxAmount = (subtotal * taxPercentage) / 100;
     const total = subtotal + taxAmount;
 
-    // Create order
+    // Create orderk
     const order = new Order({
       customer,
       items: orderItems,
@@ -77,8 +80,8 @@ const createOrder = async (req, res) => {
       orderType,
       tableNumber: orderType === "dine-in" ? tableNumber : "",
       seatNumber: "1",
-      deliveryAddress: orderType === "delivery" ? deliveryAddress : "",
-      notes: "unas",
+      // deliveryAddress: orderType === "delivery" ? deliveryAddress : "",
+      // notes: "unas",
       paymentMethod: paymentMethod || "cash",
       paymentStatus: paymentMethod === "cash" ? "pending" : "paid",
     });
