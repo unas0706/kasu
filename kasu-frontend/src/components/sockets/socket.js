@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 
-const socket = io("https://kasu-4z4t.onrender.com");
+// const socket = io("https://kasu-4z4t.onrender.com");
 
-// const socket = io("http://localhost:5000");
+const socket = io("http://localhost:5000");
 
 export default socket;

@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: kasu-frontend
+    env: static
+    buildCommand: npm run build
+    staticPublishPath: dist
+
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

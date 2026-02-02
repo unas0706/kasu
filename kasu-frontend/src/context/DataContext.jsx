@@ -29,9 +29,9 @@ import socket from "../components/sockets/socket";
 
 const DataContext = createContext();
 
-// const API = "http://localhost:5000/api";
+const API = "http://localhost:5000/api";
 
-const API = "https://kasu-4z4t.onrender.com/api";
+// const API = "https://kasu-4z4t.onrender.com/api";
 
 export const useData = () => {
   const context = useContext(DataContext);
@@ -83,10 +83,12 @@ export const DataProvider = ({ children }) => {
   const audioRef = useRef(null);
 
   useEffect(() => {
-    (fetchCategories(), fetchItems(), fetchOrdersHistory());
+
+    if (token) {
+      (fetchCategories(), fetchItems(), fetchOrdersHistory());
     socket.emit("join-manager-room");
-    socket.on("new-order", (order) => {
-      console.log("Order update:", order);
+        socket.on("new-order", (order) => {
+      // console.log("Order update:", order);
       // playNotificationSound();
       audioRef.current.play();
 
@@ -105,7 +107,11 @@ export const DataProvider = ({ children }) => {
         return [order, ...prev];
       });
     });
-  }, []);
+    }
+
+    
+
+  }, [token]);
 
   const playNotificationSound = () => {
     if (audioRef.current) {

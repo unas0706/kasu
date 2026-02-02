@@ -3,8 +3,8 @@ import axios from "axios";
 
 const userContext = createContext();
 
-// const API = "http://localhost:5000/api";
-const API = " https://kasu-4z4t.onrender.com/api";
+const API = "http://localhost:5000/api";
+// const API = " https://kasu-4z4t.onrender.com/api";
 
 export const UserProvider = ({ children }) => {
   const [categories, setCategories] = useState(null);
